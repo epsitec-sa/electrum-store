@@ -1,9 +1,11 @@
 {
   "name": "electrum-store",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Electrum store provides a store implementation tailored for Electrum.",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
+    "compile": "babel -d lib/ src/",
+    "prepublish": "npm run compile",
     "test": "mocha src/test/**/*.js"
   },
   "repository": {
