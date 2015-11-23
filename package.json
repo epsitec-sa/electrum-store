@@ -1,28 +1,34 @@
 {
   "name": "electrum-store",
   "version": "0.0.1",
-  "description": "Electrum store provides the state for pure electrum components.",
+  "description": "Electrum store provides a store implementation tailored for Electrum.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test/**/*.spec.js"
+    "test": "mocha src/test/**/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/epsitec-sa/electrum-store"
   },
   "author": "Epsitec SA",
   "license": "MIT",
-  "babel": {
-    "presets": [
-      "es2015",
-      "react"
-    ]
-  },
+  "homepage": "https://github.com/epsitec-sa/electrum-store",
   "devDependencies": {
-    "babel-core": "^6.0.20",
-    "babel-preset-es2015": "^6.0.15",
-    "babel-preset-react": "^6.0.15",
+    "babel-core": "^6.2.1",
+    "babel-plugin-transform-decorators": "^6.1.18",
+    "babel-plugin-transform-react-display-name": "^6.1.18",
+    "babel-preset-es2015": "^6.1.18",
+    "babel-preset-react": "^6.1.18",
+    "babel-preset-stage-0": "^6.1.18",
+    "chai": "^3.4.1",
     "jsdom": "^7.0.2",
-    "mai-chai": "^0.4.0",
-    "mocha": "^2.3.3",
-    "react": "^0.14.2",
-    "react-addons-test-utils": "^0.14.2",
-    "react-dom": "^0.14.2"
+    "mai-chai": "^1.1.2",
+    "mocha": "^2.3.4",
+    "path": "^0.12.7",
+    "react": "^0.14.3",
+    "react-addons-shallow-compare": "^0.14.3",
+    "react-addons-test-utils": "^0.14.3",
+    "react-dom": "^0.14.3",
+    "react-element-to-jsx-string": "^2.1.2"
   }
 }
