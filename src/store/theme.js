@@ -1,7 +1,16 @@
 'use strict';
 
+/******************************************************************************/
+
+const secretKey = {};
+
+/******************************************************************************/
+
 class Theme {
-  constructor (name, typo, palette, colors, transitions, spacing, shapes) {
+  constructor (name, key, typo, palette, colors, transitions, spacing, shapes) {
+    if (key !== secretKey) {
+      throw new Error ('Do not call Theme constructor directly; use Theme.create instead');
+    }
     this._name = name;
     this._typo = typo;
     this._palette = palette;
@@ -39,9 +48,11 @@ class Theme {
     return this._shapes;
   }
 
-  static create(name) {
-    return new Theme (name, {}, {}, {}, {}, {}, {});
+  static create (name) {
+    return new Theme (name, secretKey, {}, {}, {}, {}, {}, {});
   }
 }
+
+/******************************************************************************/
 
 module.exports = Theme;
