@@ -95,10 +95,17 @@ class Store {
     return new Store (id, secretKey, values);
   }
 
-  static link (props, id) {
+  static link (props, id, override) {
     const {node} = props;
+    let theme = props.theme;
+    if (override) {
+      if (override.theme) {
+        theme = override.theme;
+      }
+    }
     return {
-      node: node.getChild (id)
+      node: node.getChild (id),
+      theme
     };
   }
 

@@ -4,6 +4,7 @@ import {expect} from 'mai-chai';
 
 import Node from '../store/node.js';
 import Store from '../store/store.js';
+import Theme from '../store/theme.js';
 
 describe ('Store', () => {
   describe ('basic operations', () => {
@@ -36,6 +37,27 @@ describe ('Store', () => {
       it ('creates a store with an immutable root node', () => {
         const store = Store.create ();
         expect (() => Node.withValue (store.root, 'x', 1)).to.throw (Error);
+      });
+    });
+
+    describe ('Store.link()', () => {
+      it ('produces properties linked to child node', () => {
+        const store = Store.create ('x');
+        store.setNode (Node.create ('a.b.c'));
+        const props1 = {node: store.findNode ('a')};
+        const props2 = Store.link (props1, 'b');
+        expect (props1.node).to.equal (store.findNode ('a'));
+        expect (props2.node).to.equal (store.findNode ('a.b'));
+      });
+
+      it ('produces properties which propagate the theme', () => {
+        const store = Store.create ('x');
+        const theme = Theme.create ('default');
+        store.setNode (Node.create ('a.b.c'));
+        const props1 = {node: store.findNode ('a'), theme};
+        const props2 = Store.link (props1, 'b');
+        expect (props1.theme).to.equal (theme);
+        expect (props2.theme).to.equal (theme);
       });
     });
   });
