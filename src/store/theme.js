@@ -67,8 +67,7 @@ class Theme {
 
   static create (name) {
     if ((typeof name !== 'string') ||
-        (name.length === 0))
-    {
+        (name.length === 0)) {
       throw new Error ('name must be a valid string');
     }
     const Palette     = paletteBuilder (Colors);
