@@ -1,10 +1,10 @@
 {
   "name": "electrum-store",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Electrum store provides a store implementation tailored for Electrum.",
   "main": "lib/index.js",
   "scripts": {
-    "compile": "babel -d lib/ src/",
+    "compile": "rimraf ./lib && require-self && babel -d lib src",
     "prepublish": "npm run compile",
     "test": "mocha src/test/**/*.js"
   },
@@ -32,6 +32,8 @@
     "react-addons-shallow-compare": "^0.14.3",
     "react-addons-test-utils": "^0.14.3",
     "react-dom": "^0.14.3",
-    "react-element-to-jsx-string": "^2.1.2"
+    "react-element-to-jsx-string": "^2.1.2",
+    "require-self": "^0.1.0",
+    "rimraf": "^2.4.4"
   }
 }
