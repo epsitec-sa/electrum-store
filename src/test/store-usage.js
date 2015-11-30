@@ -1,10 +1,7 @@
 'use strict';
 
 import {expect} from 'mai-chai';
-
-import Node from '../store/node.js';
-import Store from '../store/store.js';
-import Theme from '../store/theme.js';
+import {Node, Store, Theme} from 'electrum-store';
 
 describe ('Store', () => {
   describe ('basic operations', () => {
