@@ -16,7 +16,7 @@ function changeGeneration (store) {
 function updateTree (store, state, mutation) {
   const parentId = State.getParentId (state.id);
   if (parentId) {
-    const parentState = store.findState (parentId) || State.create (parentId);
+    const parentState = store.find (parentId) || State.create (parentId);
     updateTree (store, parentState, mutation);
   }
   return patchState (store, State.with (state, mutation));
@@ -39,8 +39,9 @@ class Store {
     this._id = id;
   }
 
-  getState (id) {
-    return this.findState (id) || this.setState (State.create (id));
+  select (id) {
+    return this.find (id) ||
+           this.setState (State.create (id));
   }
 
   setState (state) {
@@ -51,7 +52,7 @@ class Store {
       throw new Error ('Invalid state');
     }
 
-    if (state === this.findState (state.id)) { // No mutation
+    if (state === this.find (state.id)) { // No mutation
       return state;
     } else {
       const mutation = {
@@ -62,7 +63,7 @@ class Store {
     }
   }
 
-  findState (id) {
+  find (id) {
     if (typeof id !== 'string') {
       throw new Error ('Invalid state id');
     }

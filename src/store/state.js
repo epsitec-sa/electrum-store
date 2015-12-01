@@ -48,9 +48,9 @@ class State {
 
   getChild (id) {
     if (this._id.length === 0) {
-      return this._store.getState (id);
+      return this._store.select (id);
     } else {
-      return this._store.getState (State.join (this._id, id));
+      return this._store.select (State.join (this._id, id));
     }
   }
 
