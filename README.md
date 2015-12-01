@@ -7,6 +7,18 @@
 Electrum Store (`electrum-store`) provides a store implementation tailored
 for use with `electrum-arc`, the Electrum Agnostic Reactive Components.
 
+The **store** maintains **state** organized as a tree. State is
+**immutable**. When the store is updated, new state is produced and
+nodes get replaced in the tree.
+
+Neither the store nor its states will emit notifications when things
+change, since `electrum` does not need the feature.
+
+Thanks to immutability, whole trees can be compared for equality
+with `===`. Whenever a (sub-)tree changes, the store guarantees that
+the `state` objects change too, from the node in the tree where the
+change happened up to the root of the tree (_change percolation_).
+
 # Store
 ## Create a store
 
