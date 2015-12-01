@@ -19,6 +19,8 @@ function verifyMutationKeys (mutation) {
   }
 }
 
+/******************************************************************************/
+
 class State {
   constructor (key, id, store, generation, values) {
     if (key !== secretKey) {
@@ -61,6 +63,10 @@ class State {
       id = '';
     }
     return this._values[id];
+  }
+
+  set (...args) {
+    return State.withValues (this, ...args);
   }
 
   select (id) {
@@ -132,7 +138,7 @@ class State {
     if (state._values[id] === value) {
       return state;
     } else {
-      return State.withValues (state, id, value);
+      return State._withValues (state, [id, value]);
     }
   }
 
@@ -144,6 +150,10 @@ class State {
       throw new Error ('Invalid number of arguments');
     }
 
+    return State._withValues (state, args);
+  }
+
+  static _withValues (state, args) {
     var values;
 
     for (let i = 0; i < args.length; i += 2) {
@@ -190,5 +200,7 @@ class State {
     }
   }
 }
+
+/******************************************************************************/
 
 module.exports = State;
