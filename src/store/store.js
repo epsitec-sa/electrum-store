@@ -40,6 +40,9 @@ class Store {
   }
 
   select (id) {
+    if (arguments.length === 0) {
+      return this._rootState;
+    }
     return this.find (id) ||
            this.setState (State.create (id));
   }
@@ -64,6 +67,9 @@ class Store {
   }
 
   find (id) {
+    if (arguments.length === 0) {
+      return this._rootState;
+    }
     if (typeof id !== 'string') {
       throw new Error ('Invalid state id');
     }
