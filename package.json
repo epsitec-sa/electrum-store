@@ -1,6 +1,6 @@
 {
   "name": "electrum-store",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Electrum store provides a store implementation tailored for Electrum.",
   "main": "lib/index.js",
   "scripts": {
@@ -24,6 +24,7 @@
     "babel-preset-react": "^6.1.18",
     "babel-preset-stage-0": "^6.1.18",
     "chai": "^3.4.1",
+    "electrum-theme": "^0.9.0",
     "jsdom": "^7.0.2",
     "mai-chai": "^1.1.2",
     "mocha": "^2.3.4",
