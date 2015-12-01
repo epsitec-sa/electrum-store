@@ -30,9 +30,13 @@ describe ('Store', () => {
       expect (store.root).to.equal (store.find (''));
     });
 
-    it ('creates a store with an immutable root state', () => {
+    it ('creates a store with a mutable root state', () => {
       const store = Store.create ();
-      expect (() => State.withValue (store.root, 'x', 1)).to.throw (Error);
+      const root1 = store.root;
+      const root2 = State.withValue (root1, 'x', 10);
+      expect (root1).to.not.equal (root2);
+      expect (root1.get ('x')).to.be.undefined ();
+      expect (root2.get ('x')).to.equal (10);
     });
   });
 });

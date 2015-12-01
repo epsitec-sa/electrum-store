@@ -28,11 +28,9 @@ const secretKey = {};
 
 class Store {
   constructor (id, key, values) {
-
     if (key !== secretKey) {
       throw new Error ('Do not call Store constructor directly; use Store.create instead');
     }
-
     this._states = {};
     this._generation = 0;
     this._rootState = State.createRootState (this, values);
@@ -51,7 +49,7 @@ class Store {
     if (typeof state === 'string') {
       state = State.create (state);
     }
-    if (!state || !state.id || !(state instanceof State)) {
+    if (!state || !(state instanceof State)) {
       throw new Error ('Invalid state');
     }
 
@@ -111,7 +109,7 @@ class Store {
       }
     }
     return {
-      state: state.getChild (id),
+      state: state.select (id),
       theme
     };
   }

@@ -3,21 +3,35 @@
 const emptyValues = {};
 const secretKey = {};
 
+function verifyMutationKeys (mutation) {
+  if (typeof mutation !== 'object') {
+    throw new Error ('Invalid mutation object');
+  }
+  for (let key of Object.getOwnPropertyNames (mutation)) {
+    switch (key) {
+      case 'generation':
+      case 'store':
+      case 'values':
+        break;
+      default:
+        throw new Error ('Unexpected key ' + key + ' in mutation');
+    }
+  }
+}
+
 class State {
   constructor (key, id, store, generation, values) {
     if (key !== secretKey) {
       throw new Error ('Do not call State constructor directly; use State.create instead');
-    }
-    if ((typeof id !== 'string') ||
-        (!store && (id.length === 0)) ||
-        (store && store._rootState && (id.length === 0))) {
-      throw new Error ('State expects a valid id');
     }
     if (typeof generation !== 'number') {
       throw new Error ('State expects a valid generation');
     }
     if (typeof values !== 'object') {
       throw new Error ('State expects valid initial values');
+    }
+    if (values.length === 0) {
+      values = emptyValues; // optimize for values set to {}
     }
 
     this._id = id;
@@ -39,14 +53,26 @@ class State {
   }
 
   get value () {
-    return this.getValue ('');
+    return this.get ();
   }
 
-  getValue (id) {
+  get (id) {
+    if (id === undefined) {
+      id = '';
+    }
     return this._values[id];
   }
 
-  getChild (id) {
+  select (id) {
+    if ((id === undefined) && (arguments.length === 0)) {
+      return this;
+    }
+    if (id === '') {
+      return this;
+    }
+    if (typeof id !== 'string') {
+      throw new Error ('Invalid state id');
+    }
     if (this._id.length === 0) {
       return this._store.select (id);
     } else {
@@ -54,8 +80,22 @@ class State {
     }
   }
 
-  static create (id) {
-    return new State (secretKey, id, null, 0, emptyValues);
+  static create (...args) {
+    if (args.length === 0) {
+      throw new Error ('No id was provided to State.create()');
+    }
+    if (args.length > 2) {
+      throw new Error ('Too many arguments provided to State.create()');
+    }
+
+    const id = args[0];
+    const values = args[1];
+
+    if ((typeof id !== 'string') ||
+        (id.length === 0)) {
+      throw new Error ('State expects a valid id');
+    }
+    return new State (secretKey, id, null, 0, values || emptyValues);
   }
 
   static createRootState (store, values) {
@@ -74,15 +114,21 @@ class State {
   }
 
   static getParentId (id) {
+    if (typeof id !== 'string') {
+      throw new Error ('State.getParentId expects a string id');
+    }
     const pos = id.lastIndexOf ('.');
     if (pos < 0) {
-      return null;
+      return id !== '' ? '' : undefined;
     } else {
       return id.substring (0, pos);
     }
   }
 
   static withValue (state, id, value) {
+    if (arguments.length !== 3) {
+      throw new Error ('Invalid number of arguments');
+    }
     if (state._values[id] === value) {
       return state;
     } else {
@@ -120,13 +166,10 @@ class State {
   }
 
   static with (state, mutation) {
-    if (state.id.length === 0) {
-      throw new Error ('Root state cannot be mutated');
-    }
+    verifyMutationKeys (mutation);
     const generation = mutation.generation || state._generation;
     const store = mutation.store || state._store;
     const values = mutation.values || state._values;
-
     if ((state._generation === generation) &&
         (state._store === store) &&
         (state._values === values)) {
