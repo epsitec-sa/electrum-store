@@ -1,13 +1,13 @@
 'use strict';
 
 import Activity from './store/activity.js';
-import Node from './store/node.js';
+import State from './store/state.js';
 import Store from './store/store.js';
 import Theme from './store/theme.js';
 
 module.exports = {
   Activity,
-  Node,
+  State,
   Store,
   Theme
 };

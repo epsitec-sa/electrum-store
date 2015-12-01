@@ -10,7 +10,9 @@ module.exports = function (wallaby) {
   return {
     files: [
       {pattern: 'test/test-helper.js'},
-      {pattern: 'src/store/**/*.js'}
+      {pattern: 'src/store/**/*.js'},
+      // {pattern: 'node_modules/electrum-store.js'},
+      {pattern: 'src/*.js'}
     ],
     tests: [
       {pattern: 'src/test/**/*.js'},

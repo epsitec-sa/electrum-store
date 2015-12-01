@@ -1,25 +1,25 @@
 'use strict';
 
-import Node from './node.js';
+import State from './state.js';
 
 /******************************************************************************/
 
-function patchNode (store, node) {
-  store._nodes[node.id] = node;
-  return node;
+function patchState (store, state) {
+  store._states[state.id] = state;
+  return state;
 }
 
 function changeGeneration (store) {
   return ++store._generation;
 }
 
-function updateTree (store, node, mutation) {
-  const parentId = Node.getParentId (node.id);
+function updateTree (store, state, mutation) {
+  const parentId = State.getParentId (state.id);
   if (parentId) {
-    const parentNode = store.findNode (parentId) || Node.create (parentId);
-    updateTree (store, parentNode, mutation);
+    const parentState = store.findState (parentId) || State.create (parentId);
+    updateTree (store, parentState, mutation);
   }
-  return patchNode (store, Node.with (node, mutation));
+  return patchState (store, State.with (state, mutation));
 }
 
 const secretKey = {};
@@ -33,43 +33,43 @@ class Store {
       throw new Error ('Do not call Store constructor directly; use Store.create instead');
     }
 
-    this._nodes = {};
+    this._states = {};
     this._generation = 0;
-    this._rootNode = Node.createRootNode (this, values);
+    this._rootState = State.createRootState (this, values);
     this._id = id;
   }
 
-  getNode (id) {
-    return this.findNode (id) || this.setNode (Node.create (id));
+  getState (id) {
+    return this.findState (id) || this.setState (State.create (id));
   }
 
-  setNode (node) {
-    if (typeof node === 'string') {
-      node = Node.create (node);
+  setState (state) {
+    if (typeof state === 'string') {
+      state = State.create (state);
     }
-    if (!node || !node.id || !(node instanceof Node)) {
-      throw new Error ('Invalid node');
+    if (!state || !state.id || !(state instanceof State)) {
+      throw new Error ('Invalid state');
     }
 
-    if (node === this.findNode (node.id)) { // No mutation
-      return node;
+    if (state === this.findState (state.id)) { // No mutation
+      return state;
     } else {
       const mutation = {
         store: this,
         generation: changeGeneration (this)
       };
-      return updateTree (this, node, mutation);
+      return updateTree (this, state, mutation);
     }
   }
 
-  findNode (id) {
+  findState (id) {
     if (typeof id !== 'string') {
-      throw new Error ('Invalid node id');
+      throw new Error ('Invalid state id');
     }
     if (id.length === 0) {
-      return this._rootNode;
+      return this._rootState;
     } else {
-      return this._nodes[id];
+      return this._states[id];
     }
   }
 
@@ -82,11 +82,11 @@ class Store {
   }
 
   get root () {
-    return this._rootNode;
+    return this._rootState;
   }
 
-  get nodeCount () {
-    return Object.keys (this._nodes).length;
+  get stateCount () {
+    return Object.keys (this._states).length;
   }
 
 /* static methods */
@@ -96,7 +96,7 @@ class Store {
   }
 
   static link (props, id, override) {
-    const {node} = props;
+    const {state} = props;
     let theme = props.theme;
     if (override) {
       if (override.theme) {
@@ -104,14 +104,14 @@ class Store {
       }
     }
     return {
-      node: node.getChild (id),
+      state: state.getChild (id),
       theme
     };
   }
 
   static read (props, id) {
-    const {node} = props;
-    return node.getValue (id);
+    const {state} = props;
+    return state.getValue (id);
   }
 }
 

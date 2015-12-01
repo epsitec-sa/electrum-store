@@ -1,7 +1,7 @@
 'use strict';
 
 import {expect} from 'mai-chai';
-import {Node, Store, Theme} from 'electrum-store';
+import {State, Store, Theme} from '../index.js';
 
 describe ('Store', () => {
   describe ('basic operations', () => {
@@ -17,41 +17,41 @@ describe ('Store', () => {
       it ('creates an empty store', () => {
         const store = Store.create ('x');
         expect (store).to.exist ();
-        expect (store.nodeCount).to.equal (0);
+        expect (store.stateCount).to.equal (0);
         expect (store.generation).to.equal (0);
         expect (store.id).to.equal ('x');
       });
 
-      it ('creates a store with an empty root node', () => {
+      it ('creates a store with an empty root state', () => {
         const store = Store.create ();
         expect (store.root).to.exist ();
         expect (store.root.store).to.equal (store);
         expect (store.root.id).to.equal ('');
-        expect (store.root).to.equal (store.getNode (''));
-        expect (store.root).to.equal (store.findNode (''));
+        expect (store.root).to.equal (store.getState (''));
+        expect (store.root).to.equal (store.findState (''));
       });
 
-      it ('creates a store with an immutable root node', () => {
+      it ('creates a store with an immutable root state', () => {
         const store = Store.create ();
-        expect (() => Node.withValue (store.root, 'x', 1)).to.throw (Error);
+        expect (() => State.withValue (store.root, 'x', 1)).to.throw (Error);
       });
     });
 
     describe ('Store.link()', () => {
-      it ('produces properties linked to child node', () => {
+      it ('produces properties linked to child state', () => {
         const store = Store.create ('x');
-        store.setNode (Node.create ('a.b.c'));
-        const props1 = {node: store.findNode ('a')};
+        store.setState (State.create ('a.b.c'));
+        const props1 = {state: store.findState ('a')};
         const props2 = Store.link (props1, 'b');
-        expect (props1.node).to.equal (store.findNode ('a'));
-        expect (props2.node).to.equal (store.findNode ('a.b'));
+        expect (props1.state).to.equal (store.findState ('a'));
+        expect (props2.state).to.equal (store.findState ('a.b'));
       });
 
       it ('produces properties which propagate the theme', () => {
         const store = Store.create ('x');
         const theme = Theme.create ('default');
-        store.setNode (Node.create ('a.b.c'));
-        const props1 = {node: store.findNode ('a'), theme};
+        store.setState (State.create ('a.b.c'));
+        const props1 = {state: store.findState ('a'), theme};
         const props2 = Store.link (props1, 'b');
         expect (props1.theme).to.equal (theme);
         expect (props2.theme).to.equal (theme);

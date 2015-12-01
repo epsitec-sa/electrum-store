@@ -1,7 +1,7 @@
 'use strict';
 
 import {expect} from 'mai-chai';
-import {Theme} from 'electrum-store';
+import {Theme} from '../index.js';
 
 describe ('Theme', () => {
   describe ('new Theme()', () => {
