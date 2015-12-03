@@ -116,7 +116,7 @@ class Store {
 
   static read (props, id) {
     const {state} = props;
-    return state.getValue (id);
+    return state.get (id);
   }
 }
 
