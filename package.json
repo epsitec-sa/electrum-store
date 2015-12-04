@@ -1,6 +1,6 @@
 {
   "name": "electrum-store",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Electrum store provides a store implementation tailored for Electrum.",
   "main": "lib/index.js",
   "scripts": {
@@ -17,14 +17,14 @@
   "homepage": "https://github.com/epsitec-sa/electrum-store",
   "devDependencies": {
     "babel-cli": "^6.2.4",
-    "babel-core": "^6.2.4",
+    "babel-core": "^6.3.2",
     "babel-plugin-transform-decorators": "^6.2.4",
     "babel-plugin-transform-react-display-name": "^6.2.4",
     "babel-preset-es2015": "^6.2.4",
     "babel-preset-react": "^6.2.4",
     "babel-preset-stage-0": "^6.2.4",
     "chai": "^3.4.1",
-    "jsdom": "^7.1.0",
+    "jsdom": "^7.1.1",
     "mai-chai": "^1.1.2",
     "mocha": "^2.3.4",
     "path": "^0.12.7",
