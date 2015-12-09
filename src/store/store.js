@@ -33,13 +33,13 @@ class Store {
     }
     this._states = {};
     this._generation = 0;
-    this._rootState = State.createRootState (this, values);
+    this._states[''] = State.createRootState (this, values);
     this._id = id;
   }
 
   select (id) {
     if (arguments.length === 0) {
-      return this._rootState;
+      return this.root;
     }
     return this.find (id) ||
            this.setState (State.create (id));
@@ -66,13 +66,13 @@ class Store {
 
   find (id) {
     if (arguments.length === 0) {
-      return this._rootState;
+      return this.root;
     }
     if (typeof id !== 'string') {
       throw new Error ('Invalid state id');
     }
     if (id.length === 0) {
-      return this._rootState;
+      return this.root;
     } else {
       return this._states[id];
     }
@@ -87,11 +87,11 @@ class Store {
   }
 
   get root () {
-    return this._rootState;
+    return this._states[''];
   }
 
   get stateCount () {
-    return Object.keys (this._states).length;
+    return Object.keys (this._states).length - 1;
   }
 
 /* static methods */

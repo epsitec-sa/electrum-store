@@ -37,6 +37,7 @@ describe ('Store', () => {
       expect (root1).to.not.equal (root2);
       expect (root1.get ('x')).to.be.undefined ();
       expect (root2.get ('x')).to.equal (10);
+      expect (store.root).to.equal (root2);
     });
   });
 });
