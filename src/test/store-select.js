@@ -10,6 +10,7 @@ describe ('Store', () => {
       const state = store.select ('a.b.c');
       expect (store.stateCount).to.equal (3);
       expect (store.generation).to.equal (1);
+      expect (store.root.generation).to.equal (1);
       expect (state.id).to.equal ('a.b.c');
     });
 

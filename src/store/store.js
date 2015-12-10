@@ -15,7 +15,7 @@ function changeGeneration (store) {
 
 function updateTree (store, state, mutation) {
   const parentId = State.getParentId (state.id);
-  if (parentId) {
+  if (parentId !== undefined) {
     const parentState = store.find (parentId) || State.create (parentId);
     updateTree (store, parentState, mutation);
   }
