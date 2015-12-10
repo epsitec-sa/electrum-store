@@ -28,6 +28,7 @@ describe ('Store', () => {
       expect (store.root.id).to.equal ('');
       expect (store.root).to.equal (store.select (''));
       expect (store.root).to.equal (store.find (''));
+      expect (store.root).to.equal (store.find ());
     });
 
     it ('creates a store with a mutable root state', () => {
