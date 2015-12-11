@@ -45,9 +45,9 @@ const state1 = store.select ('a.b.c');
 const state2 = store.select ('a').select ('b.c');
 const state3 = store.find ('a.b.c');
 const state4 = store.find ('x.y');
-expect (state1 === state2);
-expect (state1 === state3);
-expect (state4 === undefined);
+expect (state1).to.equal (state2);
+expect (state1).to.equal (state3);
+expect (state4).to.equal (undefined);
 ```
 
 ## Mutate the store
@@ -66,10 +66,10 @@ whereas node `c` will remain at `generation:1`.
 const store = Store.create ();
 store.select ('a.b.c'); // generation 1
 store.select ('a.b.d'); // generation 2
-expect (store.find ('a').generation === 2);
-expect (store.find ('a.b').generation === 2);
-expect (store.find ('a.b.c').generation === 1);
-expect (store.find ('a.b.d').generation === 2);
+expect (store.find ('a').generation).to.equal (2);
+expect (store.find ('a.b').generation).to.equal (2);
+expect (store.find ('a.b.c').generation).to.equal (1);
+expect (store.find ('a.b.d').generation).to.equal (2);
 ```
 
 ## Explicitly set state
@@ -82,9 +82,9 @@ explicitly:
 const store = Store.create ();
 const state1 = State.create ('x.y');
 const state2 = store.setState (state1);
-expect (state1.generation === 0);
-expect (state1 !== state2);
-expect (state2.generation === 1);
+expect (state1.generation).to.equal (0);
+expect (state1).to.not.equal (state2);
+expect (state2.generation).to.equal (1);
 ```
 
 # State
@@ -105,14 +105,14 @@ To create state with an initial value, use `State.create()`.
 
 ```javascript
 const state1 = State.create ('empty');
-expect (state1.value === undefined);
+expect (state1.value).to.equal (undefined);
 
 const state2 = State.create ('message', {'': 'Hello'});
-expect (state2.value === 'Hello');
+expect (state2.value).to.equal ('Hello');
 
 const state3 = State.create ('person', {name: 'Joe', age: 78});
-expect (state3.get ('name') === 'Joe');
-expect (state3.get ('age') === 78);
+expect (state3.get ('name')).to.equal ('Joe');
+expect (state3.get ('age')).to.equal (78);
 ```
 
 ## Mutate state
@@ -128,7 +128,19 @@ const state4 = State.with (state1, {values: {x: 10, y: 20}});
 
 // Setting same values does not mutate state:
 const state5 = State.with (state1, {values: {x: 1, y: 2}});
-expect (state1 === state5); // same values, same state
+expect (state1).to.equal (state5); // same values, same state
+```
+
+It is also possible to use method `set()` to create a new state;
+this is just syntactic sugar over the `State.withValue()` static
+methods.
+
+```javascript
+const state1 = State.create ('a');
+const state2 = state1.set ('x', 1);
+const state3 = state2.set ('a'); // set default value
+expect (state2.get ('x')).to.equal (1);
+expect (state3.get ()).to.equal ('a');
 ```
 
 ## Mutate state in a store
@@ -139,16 +151,16 @@ while doing so.
 
 ```javascript
 const store = Store.create ();
-expect (store.select ('a.b.c').generation === 1);  // gen. 1
-expect (store.select ('a.b.d').generation === 2);  // gen. 2
+expect (store.select ('a.b.c').generation).to.equal (1);  // gen. 1
+expect (store.select ('a.b.d').generation).to.equal (2);  // gen. 2
 State.withValue (store.select ('a.b.c'), 'x', 10); // gen. 3
-expect (store.select ('a.b.c').generation === 3);
-expect (store.select ('a.b.d').generation === 2); // unchanged
-expect (store.select ('a.b').generation === 3);
-expect (store.select ('a').generation === 3);
+expect (store.select ('a.b.c').generation).to.equal (3);
+expect (store.select ('a.b.d').generation).to.equal (2); // unchanged
+expect (store.select ('a.b').generation).to.equal (3);
+expect (store.select ('a').generation).to.equal (3);
 State.withValue (store.select ('a.b'), 'y', 20); // gen. 4
-expect (store.select ('a.b.c').generation === 3); // unchanged
-expect (store.select ('a.b.d').generation === 2); // unchanged
-expect (store.select ('a.b').generation === 4);
-expect (store.select ('a').generation === 4);
+expect (store.select ('a.b.c').generation).to.equal (3); // unchanged
+expect (store.select ('a.b.d').generation).to.equal (2); // unchanged
+expect (store.select ('a.b').generation).to.equal (4);
+expect (store.select ('a').generation).to.equal (4);
 ```
