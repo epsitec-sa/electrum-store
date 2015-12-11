@@ -66,6 +66,9 @@ class State {
   }
 
   set (...args) {
+    if (args.length === 1) {
+      return this.set ('', args[0]);
+    }
     return State.withValues (this, ...args);
   }
 

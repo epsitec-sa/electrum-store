@@ -46,6 +46,23 @@ describe ('State', () => {
     });
   });
 
+  describe ('set()', () => {
+    it ('produces new instance of state', () => {
+      const state1 = State.create ('a', {a: 1});
+      const state2 = state1.set ('b', 2);
+      expect (state1.get ('a')).to.equal (1);
+      expect (state2.get ('a')).to.equal (1);
+      expect (state2.get ('b')).to.equal (2);
+    });
+
+    it ('produces new instance of state', () => {
+      const state1 = State.create ('a', {'': 'x'});
+      const state2 = state1.set ('y');
+      expect (state1.get ()).to.equal ('x');
+      expect (state2.get ()).to.equal ('y');
+    });
+  });
+
   describe ('select()', () => {
     it ('selects child state', () => {
       const store = Store.create ();
