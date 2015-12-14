@@ -14,6 +14,16 @@ describe ('State', () => {
     });
   });
 
+  describe ('State.getLeafId()', () => {
+    it ('returns the leaf id', () => {
+      expect (State.getLeafId ('a.b.c')).to.equal ('c');
+      expect (State.getLeafId ('a.b')).to.equal ('b');
+      expect (State.getLeafId ('a')).to.equal ('a');
+      expect (State.getLeafId ('')).to.equal ('');
+      expect (State.getLeafId ()).to.be.undefined ();
+    });
+  });
+
   describe ('State.getParentId()', () => {
     it ('returns the parent id', () => {
       expect (State.getParentId ('a.b.c')).to.equal ('a.b');

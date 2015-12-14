@@ -27,6 +27,15 @@ describe ('Store', () => {
       expect (state4.generation).to.equal (1);
     });
 
+    it ('accepts number as id', () => {
+      const store = Store.create ('x');
+      const state1 = store.setState ('a.0');
+      const state2 = store.select ('a').select ('0');
+      const state3 = store.select ('a.0');
+      expect (state2).to.equal (state1);
+      expect (state3).to.equal (state1);
+    });
+
     it ('throws for invalid ids', () => {
       const store = Store.create ();
       expect (() => store.select (1)).to.throw (Error);

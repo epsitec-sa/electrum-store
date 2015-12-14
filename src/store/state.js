@@ -1,5 +1,7 @@
 'use strict';
 
+import 'babel-polyfill';
+
 const emptyValues = {};
 const secretKey = {};
 
@@ -56,6 +58,14 @@ class State {
 
   get value () {
     return this.get ();
+  }
+
+  get keys () {
+    return this.store.getKeys (this.id);
+  }
+
+  get indexKeys () {
+    return this.store.getIndexKeys (this.id);
   }
 
   get (id) {
@@ -120,6 +130,14 @@ class State {
     }
 
     return args.join ('.');
+  }
+
+  static getLeafId (id) {
+    if (!id) {
+      return id;
+    }
+    const pos = id.lastIndexOf ('.') + 1;
+    return pos === 0 ? id : id.substring (pos);
   }
 
   static getParentId (id) {

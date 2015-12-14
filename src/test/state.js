@@ -94,4 +94,31 @@ describe ('State', () => {
       expect (() => store.root.select ({})).to.throw (Error);
     });
   });
+
+  describe ('keys', () => {
+    it ('returns keys of children', () => {
+      const store = Store.create ();
+      store.select ('a.1');
+      store.select ('a.b.c');
+      store.select ('a.b.d');
+      store.select ('a.10');
+      store.select ('a.2');
+      const state = store.find ('a');
+      const arr = state.keys;
+      expect (arr).to.deep.equal (['1', 'b', '10', '2']);
+    });
+  });
+
+  describe ('indexKeys', () => {
+    it ('returns sorted index keys', () => {
+      const store = Store.create ();
+      store.select ('a.1');
+      store.select ('a.10');
+      store.select ('a.2');
+      store.select ('a.b.c');
+      const state = store.find ('a');
+      const arr = state.indexKeys;
+      expect (arr).to.deep.equal ([1, 2, 10]);
+    });
+  });
 });

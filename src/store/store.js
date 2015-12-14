@@ -1,6 +1,7 @@
 'use strict';
 
 import State from './state.js';
+import parsePositiveInt from './parse-positive-int.js';
 
 /******************************************************************************/
 
@@ -43,6 +44,37 @@ class Store {
     }
     return this.find (id) ||
            this.setState (State.create (id));
+  }
+
+  getIds (startId) {
+    if (arguments.length === 0) {
+      return [''];
+    }
+    const ids = Object.getOwnPropertyNames (this._states);
+    if (startId === '') {
+      // Special case: return all top level nodes
+      return ids.filter (id => id.length && id.indexOf ('.') < 0);
+    }
+    const prefix = startId + '.';
+    const length = prefix.length;
+    return ids.filter (id => id.startsWith (prefix) && id.indexOf ('.', length) < 0);
+  }
+
+  getKeys (startId) {
+    return this.getIds (startId).map (id => State.getLeafId (id));
+  }
+
+  getIndexIds (startId) {
+    return this.getIndexKeys (startId).map (key => `${startId}.${key}`);
+  }
+
+  getIndexKeys (startId) {
+    const nums = this.getIds (startId)
+                     .map (id => parsePositiveInt (State.getLeafId (id)))
+                     .filter (num => !isNaN (num));
+    // Numeric sort required here
+    nums.sort ((a, b) => a - b);
+    return nums;
   }
 
   setState (state) {
