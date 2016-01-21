@@ -21,6 +21,13 @@ function verifyMutationKeys (mutation) {
   }
 }
 
+function isEmpty (obj) {
+  for (let x in obj) {
+    return false;
+  }
+  return true;
+}
+
 /******************************************************************************/
 
 class State {
@@ -68,6 +75,10 @@ class State {
     return this.store.getIndexKeys (this.id);
   }
 
+  contains (id) {
+    return this.get (id) !== undefined;
+  }
+
   get (id) {
     if (id === undefined) {
       id = '';
@@ -86,6 +97,27 @@ class State {
     if ((id === undefined) && (arguments.length === 0)) {
       return this;
     }
+    return this.selectOrFind (id, i => this._store.select (i));
+  }
+
+  find (id) {
+    if ((id === undefined) && (arguments.length === 0)) {
+      return this;
+    }
+    return this.selectOrFind (id, i => this._store.find (i));
+  }
+
+  any (id) {
+    if ((id === undefined) && (arguments.length === 0)) {
+      return !isEmpty (this._values) || this.keys.length > 0;
+    }
+    return this.selectOrFind (id, i => {
+      const state = this._store.find (i);
+      return !!state && state.any ();
+    });
+  }
+
+  selectOrFind (id, access) {
     if (id === '') {
       return this;
     }
@@ -93,9 +125,9 @@ class State {
       throw new Error ('Invalid state id');
     }
     if (this._id.length === 0) {
-      return this._store.select (id);
+      return access (id);
     } else {
-      return this._store.select (State.join (this._id, id));
+      return access (State.join (this._id, id));
     }
   }
 

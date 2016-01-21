@@ -99,6 +99,14 @@ State holds following information:
 The default value is accessed with `state.value`. Named values can be
 accessed using `state.get(name)`.
 
+## Read from state
+
+* `get (id)` or `get ()` &rarr; the value for `id` (or the default value) if it
+  exists, otherwise `undefined`.
+* `any (id)` or `any ()` &rarr; `true` if the state specified by `id` exists
+  and if it is non-empty.
+* `contains (id)` &rarr; `true` if a value exists for `id`, otherwise `false`.
+
 ## Create state
 
 To create state with an initial value, use `State.create()`.
