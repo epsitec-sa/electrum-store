@@ -109,7 +109,7 @@ accessed using `state.get(name)`.
   and if it is non-empty.
 * `contains (id)` &rarr; `true` if a value exists for `id`, otherwise `false`.
 
-The state can also be used as a staring point for `find()` and `select()`.
+The state can also be used as a starting point for `find()` and `select()`.
 Without any argument, they return the state itself.
 `select()` creates missing nodes whereas `find()` returns `undefined` if
 it does not find the specified nodes.
