@@ -55,6 +55,10 @@ class State {
     return this._id;
   }
 
+  get parentId () {
+    return State.getParentId (this._id);
+  }
+
   get store () {
     return this._store;
   }
@@ -84,6 +88,17 @@ class State {
       id = '';
     }
     return this._values[id];
+  }
+
+  getInherited (id) {
+    const value = this.get (id);
+    if (value !== undefined) {
+      return value;
+    }
+    const parent = this.parentId;
+    if (parent !== undefined) {
+      return this.store.find (parent).getInherited (id);
+    }
   }
 
   set (...args) {

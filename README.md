@@ -103,9 +103,16 @@ accessed using `state.get(name)`.
 
 * `get (id)` or `get ()` &rarr; the value for `id` (or the default value) if it
   exists, otherwise `undefined`.
+* `getInherited (id)` &rarr; the value for `id` if it can be found on the state
+  or any of its parent nodes, otherwise `undefined`.
 * `any (id)` or `any ()` &rarr; `true` if the state specified by `id` exists
   and if it is non-empty.
 * `contains (id)` &rarr; `true` if a value exists for `id`, otherwise `false`.
+
+The state can also be used as a staring point for `find()` and `select()`.
+Without any argument, they return the state itself.
+`select()` creates missing nodes whereas `find()` returns `undefined` if
+it does not find the specified nodes.
 
 ## Create state
 

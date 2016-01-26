@@ -202,4 +202,38 @@ describe ('State', () => {
       expect (arr).to.deep.equal ([1, 2, 10]);
     });
   });
+
+  describe ('parentId', () => {
+    it ('returns the parent id', () => {
+      const store = Store.create ();
+      const state = store.select ('a.b.c');
+      expect (state.parentId).to.equal ('a.b');
+      expect (store.find ('a').parentId).to.equal ('');
+    });
+
+    it ('returns undefined for the root', () => {
+      const store = Store.create ();
+      store.select ('a.b.c');
+      expect (store.root.parentId).to.not.exist ();
+    });
+  });
+
+  describe ('getInherited', () => {
+    const store = Store.create ();
+    store.select ('a.b.c');
+    store.select ('a').set ('x', 1);
+    store.select ('a.b').set ('x', 2);
+    store.root.set ('y', 3);
+    store.select ('a').set ('z', 4);
+
+    it ('returns the first value found in the tree', () => {
+      expect (store.find ('a.b.c').getInherited ('x')).to.equal (2);
+      expect (store.find ('a.b').getInherited ('x')).to.equal (2);
+      expect (store.find ('a').getInherited ('x')).to.equal (1);
+      expect (store.root.getInherited ('x')).to.not.exist ();
+      expect (store.root.getInherited ('y')).to.equal (3);
+      expect (store.find ('a.b.c').getInherited ('z')).to.equal (4);
+      expect (store.find ('a.b.c').getInherited ('y')).to.equal (3);
+    });
+  });
 });
