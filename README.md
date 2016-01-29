@@ -154,8 +154,11 @@ methods.
 const state1 = State.create ('a');
 const state2 = state1.set ('x', 1);
 const state3 = state2.set ('a'); // set default value
+const state4 = state1.set ('x', 1, 'y', 2);
 expect (state2.get ('x')).to.equal (1);
 expect (state3.get ()).to.equal ('a');
+expect (state4.get ('x')).to.equal (1);
+expect (state4.get ('y')).to.equal (2);
 ```
 
 ## Mutate state in a store
