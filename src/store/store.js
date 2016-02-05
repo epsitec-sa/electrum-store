@@ -1,7 +1,7 @@
 'use strict';
 
 import State from './state.js';
-import parsePositiveInt from './parse-positive-int.js';
+import {parsePositiveInt} from 'electrum-utils';
 
 /******************************************************************************/
 
