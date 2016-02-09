@@ -81,8 +81,30 @@ describe ('State', () => {
 
     it ('throws for invalid ids', () => {
       const store = Store.create ();
-      expect (() => store.root.select (1)).to.throw (Error);
+      expect (() => store.root.select (-1)).to.throw (Error);
+      expect (() => store.root.select (1.1)).to.throw (Error);
       expect (() => store.root.select ({})).to.throw (Error);
+    });
+  });
+
+  describe ('remove()', () => {
+    it ('removes self if no argument provided', () => {
+      const store = Store.create ();
+      store.select ('a.b.c');
+      store.select ('a.b.d');
+      store.find ('a.b').remove ();
+      expect (store.find ('a.b')).to.not.exist ();
+      expect (store.find ('a.b.c')).to.not.exist ();
+    });
+
+    it ('removes specified children', () => {
+      const store = Store.create ();
+      store.select ('a.b.c');
+      store.select ('a.b.d');
+      store.find ('a.b').remove ('d');
+      expect (store.find ('a.b')).to.exist ();
+      expect (store.find ('a.b.c')).to.exist ();
+      expect (store.find ('a.b.d')).to.not.exist ();
     });
   });
 
@@ -114,7 +136,8 @@ describe ('State', () => {
 
     it ('throws for invalid ids', () => {
       const store = Store.create ();
-      expect (() => store.root.find (1)).to.throw (Error);
+      expect (() => store.root.find (-1)).to.throw (Error);
+      expect (() => store.root.find (1.1)).to.throw (Error);
       expect (() => store.root.find ({})).to.throw (Error);
     });
   });
@@ -128,23 +151,62 @@ describe ('State', () => {
       expect (root.any ('a')).to.be.true ();
       expect (root.any ('a.b')).to.be.true ();
     });
+
     it ('returns false if state contains no children', () => {
       const store = Store.create ();
       store.select ('a.b.c');
       const root = store.root;
       expect (root.any ('a.b.c')).to.be.false (); // exists, but is empty
     });
+
     it ('returns false if state does not exist', () => {
       const store = Store.create ();
       store.select ('a.b.c');
       const root = store.root;
       expect (root.any ('a.b.d')).to.be.false (); // does not exist
     });
+
     it ('returns true if state contains nodes', () => {
       const store = Store.create ();
       expect (store.root.any ('a.b.c')).to.be.false ();
       store.select ('a.b.c').set ('x', 'X');
       expect (store.root.any ('a.b.c')).to.be.true ();
+    });
+
+    it ('returns true if state contains index', () => {
+      const store = Store.create ();
+      store.select ('a.1').set ('Hello');
+      const state = store.find ('a');
+      expect (state.any ('1')).to.be.true ();
+      expect (state.any (1)).to.be.true ();
+    });
+  });
+
+  describe ('exists()', () => {
+    it ('returns true if child state exists', () => {
+      const store = Store.create ();
+      store.select ('a.b.c');
+      const state = store.find ('a');
+      expect (state.exists ('b')).to.be.true ();
+      expect (state.exists ('b.c')).to.be.true ();
+    });
+
+    it ('returns false if child state does not exist', () => {
+      const store = Store.create ();
+      store.select ('a.b.c');
+      const state = store.find ('a');
+      expect (state.exists ('x')).to.be.false ();
+      expect (state.exists ('b.d')).to.be.false ();
+    });
+  });
+
+  describe ('key', () => {
+    it ('returns key of self', () => {
+      const store = Store.create ();
+      expect (store.select ('a.b.1').key).to.equal ('1');
+      expect (store.select ('a.b').key).to.equal ('b');
+      expect (store.select ('a').key).to.equal ('a');
+      expect (store.root.key).to.equal ('');
     });
   });
 
@@ -172,6 +234,39 @@ describe ('State', () => {
       const state = store.find ('a');
       const arr = state.indexKeys;
       expect (arr).to.deep.equal ([1, 2, 10]);
+    });
+
+    it ('returns an empty array for an empty state', () => {
+      const store = Store.create ();
+      store.select ('a');
+      const state = store.find ('a');
+      const arr = state.indexKeys;
+      expect (arr).to.deep.equal ([]);
+    });
+  });
+
+  describe ('add()', () => {
+    it ('adds a new empty state with next available index', () => {
+      const store = Store.create ();
+      store.select ('a.1');
+      store.select ('a.b.c');
+      store.select ('a.10');
+      store.select ('a.2');
+      store.select ('a.x');
+      const state = store.find ('a');
+      const fresh = state.add ();
+      expect (fresh.id).to.equal ('a.11');
+      expect (state.keys).to.deep.equal (['1', 'b', '10', '2', 'x', '11']);
+      expect (state.indexKeys).to.deep.equal ([1, 2, 10, 11]);
+    });
+
+    it ('adds an empty state with index 0 on empty state', () => {
+      const store = Store.create ();
+      store.select ('a');
+      const state = store.find ('a');
+      const fresh = state.add ();
+      expect (fresh.id).to.equal ('a.0');
+      expect (state.indexKeys).to.deep.equal ([0]);
     });
   });
 

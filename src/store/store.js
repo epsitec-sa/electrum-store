@@ -23,6 +23,27 @@ function updateTree (store, state, mutation) {
   return patchState (store, State.with (state, mutation));
 }
 
+function deleteStates (store, state) {
+  const id = state.id + '.';
+  const tree = store._states;
+
+  const mutation = {
+    generation: store.generation + 1
+  };
+
+  State.with (state, mutation);
+
+  delete tree[state.id];
+
+  for (let key in tree) {
+    if (tree.hasOwnProperty (key)) {
+      if (key.startsWith (id)) {
+        delete tree[key];
+      }
+    }
+  }
+}
+
 const secretKey = {};
 
 /******************************************************************************/
@@ -44,6 +65,21 @@ class Store {
     }
     return this.find (id) ||
            this.setState (State.create (id));
+  }
+
+  remove (id) {
+    if (arguments.length === 0) {
+      this._states = {};
+      this._states[''] = State.createRootState (this, null, changeGeneration (this));
+      return true;
+    } else {
+      const state = this.find (id);
+      if (state) {
+        deleteStates (this, state);
+        return true;
+      }
+    }
+    return false;
   }
 
   getIds (startId) {

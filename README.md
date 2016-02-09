@@ -72,6 +72,19 @@ expect (store.find ('a.b.c').generation).to.equal (1);
 expect (store.find ('a.b.d').generation).to.equal (2);
 ```
 
+A state (with all its children) can also be removed from the store:
+
+```javascript
+const store = Store.create ();
+store.select ('a.b.c'); // generation 1
+store.select ('a.b.d'); // generation 2
+store.remove ('a.b'); // generation 3
+expect (store.find ('a').generation).to.equal (3);
+expect (store.find ('a.b')).to.not.exist ();
+expect (store.find ('a.b.c')).to.not.exist ();
+expect (store.find ('a.b.d')).to.not.exist ();
+```
+
 ## Explicitly set state
 
 State is usually updated using `with()`, `withValue()` and `withValues()`
@@ -91,7 +104,8 @@ expect (state2.generation).to.equal (1);
 
 State holds following information:
 
-* `id` &rarr; the absolute path of the node (e.g. `'a.b.c'`)
+* `id` &rarr; the absolute path of the node (e.g. `'a.b.c'`).
+* `key` &rarr; the local path of the node (e.g. `'c'` if the `id` is `'a.b.c'`).
 * `store` &rarr; a reference to the containing store.
 * `generation` &rarr; the generation number of last update.
 * `values` &rarr; a collection of values - this is never accessed directly.
@@ -99,20 +113,63 @@ State holds following information:
 The default value is accessed with `state.value`. Named values can be
 accessed using `state.get(name)`.
 
-## Read from state
+## Read back values from the state
 
-* `get (id)` or `get ()` &rarr; the value for `id` (or the default value) if it
-  exists, otherwise `undefined`.
-* `getInherited (id)` &rarr; the value for `id` if it can be found on the state
-  or any of its parent nodes, otherwise `undefined`.
+* `get (name)` or `get ()` &rarr; the value for `name` (or the default value if
+  no name is specified), if it exists; otherwise `undefined`.
+* `getInherited (name)` &rarr; the value for `name` if it can be found on the
+  state or any of its parent nodes, otherwise `undefined`.
+* `contains (name)` &rarr; `true` if a value exists for `name`, otherwise `false`.
+
+## States as arrays
+
+When a state (a node of the tree) contains multiple child nodes, and when these
+nodes have an integer `key` (zero or positive), this can be considered as a poor
+men's array. The keys are then equivalent to the indexes into the array. They
+can have gaps and need not be consecutive: `[23, 24, 37]` would be valid index
+keys.
+
+## Explore the tree from the state
+
 * `any (id)` or `any ()` &rarr; `true` if the state specified by `id` exists
   and if it is non-empty.
-* `contains (id)` &rarr; `true` if a value exists for `id`, otherwise `false`.
+* `exists (id)` &rarr; `true` if the state specified by `id` exists.
+* `keys` &rarr; an array of all the `key`s found for the state's child nodes.  
+  Example: `['a', '0', '12', 'b']`
+* `indexKeys` &rarr; an array of all the indexes of the state's child nodes;
+  nodes will only be reported if their `key` is **zero** or a positive
+  integer. The values will always be sorted.  
+  Example: `[0, 1, 34]`
 
 The state can also be used as a starting point for `find()` and `select()`.
 Without any argument, they return the state itself.
-`select()` creates missing nodes whereas `find()` returns `undefined` if
-it does not find the specified nodes.
+
+* `select()` creates missing nodes.
+* `find()` returns `undefined` if it does not find the specified child.
+* `remove()` removes the node (if called without arguments) or the specified
+  child, if an `id` is provided.
+
+`select()`, `find()`, `remove()` and `any()` accept a child `id` or an index,
+which will be converted to a key and used to look up the child.
+
+## Adding items to an array
+
+Arrays can be built using `state.add()`:
+
+* `add ()` &rarr; a new child state, where the `key` is equal to the current
+  highest index, plus one.
+
+This is an easy way to add new states to an array of states.
+
+```javascript
+const store = Store.create ();
+store.select ('a.1');
+store.select ('a.2');
+store.select ('a.5');
+
+expect (store.select ('a').add ().key).to.equal ('6');
+expect (store.select ('a').indexKeys).to.deep.equal ([1, 2, 5, 6]);
+```
 
 ## Create state
 

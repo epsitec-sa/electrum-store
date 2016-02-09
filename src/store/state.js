@@ -55,6 +55,10 @@ class State {
     return this._id;
   }
 
+  get key () {
+    return State.getLeafId (this._id);
+  }
+
   get parentId () {
     return State.getParentId (this._id);
   }
@@ -108,6 +112,19 @@ class State {
     return State.withValues (this, ...args);
   }
 
+  add () {
+    const keys = this.indexKeys;
+    const next = keys.length === 0 ? 0 : (keys[keys.length - 1] + 1);
+    return this.select ('' + next);
+  }
+
+  remove (id) {
+    if ((id === undefined) && (arguments.length === 0)) {
+      return this.store.remove (this.id);
+    }
+    return this.selectOrFind (id, i => this._store.remove (i));
+  }
+
   select (id) {
     if ((id === undefined) && (arguments.length === 0)) {
       return this;
@@ -132,9 +149,21 @@ class State {
     });
   }
 
+  exists (id) {
+    return this.selectOrFind (id, i => {
+      const state = this._store.find (i);
+      return !!state;
+    });
+  }
+
   selectOrFind (id, access) {
     if (id === '') {
       return this;
+    }
+    if (typeof id === 'number') {
+      if (Math.floor (id) === id && id >= 0) {
+        id = '' + id;
+      }
     }
     if (typeof id !== 'string') {
       throw new Error ('Invalid state id');
@@ -164,8 +193,8 @@ class State {
     return new State (secretKey, id, null, 0, values || emptyValues);
   }
 
-  static createRootState (store, values) {
-    return new State (secretKey, '', store, 0, values || emptyValues);
+  static createRootState (store, values, initialGeneration = 0) {
+    return new State (secretKey, '', store, initialGeneration, values || emptyValues);
   }
 
   static join (...args) {
