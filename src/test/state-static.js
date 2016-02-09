@@ -4,6 +4,34 @@ import {expect} from 'mai-chai';
 import {State} from '../index.js';
 
 describe ('State', () => {
+  describe ('create()', () => {
+    it ('requires a valid id of type string', () => {
+      expect (() => State.create ()).to.throw (Error);
+      expect (() => State.create (123)).to.throw (Error);
+      expect (() => State.create ('')).to.throw (Error);
+    });
+
+    it ('accepts at most two arguments', () => {
+      expect (() => State.create ('a', {}, 123)).to.throw (Error);
+    });
+
+    it ('creates an empty state', () => {
+      const state = State.create ('a');
+      expect (state).to.exist ();
+      expect (state).to.have.property ('id', 'a');
+      expect (state.get ()).to.equal (undefined);
+    });
+
+    it ('creates an empty state with initial values', () => {
+      const state = State.create ('a', {'': 123, foo: 'bar'});
+      expect (state).to.exist ();
+      expect (state).to.have.property ('id', 'a');
+      expect (state).to.have.property ('value', 123);
+      expect (state.get ()).to.equal (123);
+      expect (state.get ('foo')).to.equal ('bar');
+    });
+  });
+
   describe ('State.join()', () => {
     it ('returns a joined path', () => {
       expect (State.join ('a', 'b', 'c')).to.equal ('a.b.c');
