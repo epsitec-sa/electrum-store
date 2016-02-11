@@ -1,9 +1,4 @@
 'use strict';
 
-import State from './store/state.js';
-import Store from './store/store.js';
-
-module.exports = {
-  State,
-  Store
-};
+export State from './store/state.js';
+export Store from './store/store.js';
