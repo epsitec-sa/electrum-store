@@ -5,6 +5,15 @@ import 'babel-polyfill';
 const emptyValues = {};
 const secretKey = {};
 
+function isPositiveInteger (value) {
+  if (typeof value === 'number') {
+    if (Math.floor (value) === value && value >= 0) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function verifyMutationKeys (mutation) {
   if (typeof mutation !== 'object') {
     throw new Error ('Invalid mutation object');
@@ -160,10 +169,8 @@ class State {
     if (id === '') {
       return this;
     }
-    if (typeof id === 'number') {
-      if (Math.floor (id) === id && id >= 0) {
-        id = '' + id;
-      }
+    if (isPositiveInteger (id)) {
+      id = '' + id;
     }
     if (typeof id !== 'string') {
       throw new Error ('Invalid state id');
@@ -225,6 +232,30 @@ class State {
       return id !== '' ? '' : undefined;
     } else {
       return id.substring (0, pos);
+    }
+  }
+
+  static getAncestorId (id, part) {
+    if (typeof id !== 'string') {
+      throw new Error ('State.getAncestorId expects a string id');
+    }
+    if (isPositiveInteger (part)) {
+      part = '' + part;
+    }
+    if (typeof part !== 'string') {
+      throw new Error ('State.getAncestorId expects a string part');
+    }
+    if (part.indexOf ('.') >= 0) {
+      throw new Error ('State.getAncestorId part cannot be a path specification');
+    }
+    if (part === '') {
+      return '';
+    }
+    const parts = id.split ('.');
+    for (let i = parts.length; i > 0; --i) {
+      if (parts[i - 1] === part) {
+        return parts.slice (0, i).join ('.');
+      }
     }
   }
 

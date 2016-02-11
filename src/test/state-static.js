@@ -65,6 +65,27 @@ describe ('State', () => {
     });
   });
 
+  describe ('State.getAncestorId()', () => {
+    it ('returns the ancestor id', () => {
+      expect (State.getAncestorId ('a.b.c', 'c')).to.equal ('a.b.c');
+      expect (State.getAncestorId ('a.b.c', 'b')).to.equal ('a.b');
+      expect (State.getAncestorId ('a.b.c', 'a')).to.equal ('a');
+      expect (State.getAncestorId ('a.b.c', '')).to.equal ('');
+    });
+
+    it ('accepts numeric part', () => {
+      expect (State.getAncestorId ('a.1.c', 1)).to.equal ('a.1');
+    });
+
+    it ('returns undefined when there is no match', () => {
+      expect (State.getAncestorId ('a.b.c', 'x')).to.be.undefined ();
+    });
+
+    it ('rejects part which contains "."', () => {
+      expect (() => State.getAncestorId ('a.b.c', 'a.b')).to.throw ('cannot be a path specification');
+    });
+  });
+
   describe ('State.withValue()', () => {
     it ('mutates the state when the value changes', () => {
       const state1 = State.create ('a', {x: 1});

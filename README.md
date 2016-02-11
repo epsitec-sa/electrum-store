@@ -152,6 +152,25 @@ Without any argument, they return the state itself.
 `select()`, `find()`, `remove()` and `any()` accept a child `id` or an index,
 which will be converted to a key and used to look up the child.
 
+## Working with state ids
+
+State ids are similar to _paths_ where the elements are separated by `.`.
+Class `State` provides some static methods to manipulate these ids:
+
+* `State.join (a, b, c, ...)` &rarr; returns the joined path.
+* `State.getLeafId (id)` &rarr; returns the last element of the path.
+* `State.getParentId (id)` &rarr; returns the path of the immediate parent.
+* `State.getAncestorId (id, part)` &rarr; returns the path of the first ancestor
+  which contains the specified part (path element); if the last element of the
+  `id` matches `part`, the full `id` will be returned.
+
+```javascript
+expect (State.join ('a', 'b', 'c')).to.equal ('a.b.c');
+expect (State.getLeafId ('a.b.c')).to.equal ('c');
+expect (State.getParentId ('a.b.c')).to.equal ('a.b');
+expect (State.getAncestorId ('a.b.c', 'b')).to.equal ('a.b');
+```
+
 ## Adding items to an array
 
 Arrays can be built using `state.add()`:
