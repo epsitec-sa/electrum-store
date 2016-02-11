@@ -21,8 +21,8 @@ function verifyMutationKeys (mutation) {
   }
 }
 
-function isEmpty (obj) {
-  for (let x in obj) {
+function isEmpty (obj) { /*jshint -W089 */
+  for (let x in obj) { /* jshint unused:false */
     return false;
   }
   return true;
