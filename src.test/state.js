@@ -1,7 +1,7 @@
 'use strict';
 
 import {expect} from 'mai-chai';
-import {State, Store} from '../index.js';
+import {State, Store} from 'electrum-store';
 
 describe ('State', () => {
   describe ('constructor()', () => {

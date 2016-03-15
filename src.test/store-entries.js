@@ -3,7 +3,7 @@
 import 'babel-polyfill';
 
 import {expect} from 'mai-chai';
-import {Store} from '../index.js';
+import {Store} from 'electrum-store';
 
 describe ('Store', () => {
   const store = Store.create ('x');

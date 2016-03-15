@@ -1,7 +1,7 @@
 'use strict';
 
 import {expect} from 'mai-chai';
-import {State} from '../index.js';
+import {State} from 'electrum-store';
 
 describe ('State', () => {
   describe ('create()', () => {
@@ -129,7 +129,7 @@ describe ('State', () => {
   describe ('State.with()', () => {
     it ('mutates the state when the value changes', () => {
       const state1 = State.create ('a', {x: 1, y: 2});
-      const state2 = State.with (state1, {values: {x: 2, y: 3}});
+      const state2 = State.with (state1, {values: {x: 2, y: 3} });
       expect (state1.get ('x')).to.equal (1);
       expect (state1.get ('y')).to.equal (2);
       expect (state2.get ('x')).to.equal (2);
