@@ -303,4 +303,25 @@ describe ('State', () => {
       expect (store.find ('a.b.c').getInherited ('y')).to.equal (3);
     });
   });
+  
+  describe ('shouldUpdate', () => {
+    it ('returns true for unknown generations', () => {
+      const store = Store.create ();
+      store.select ('a');
+      const state = store.select ('a.b.c');
+      expect (state.generation).to.equal (2);
+      expect (state.shouldUpdate ()).to.be.true ();
+      expect (state.shouldUpdate (0)).to.be.true ();
+    });
+    
+    it ('returns true only for compatible generations', () => {
+      const store = Store.create ();
+      store.select ('a');
+      const state = store.select ('a.b.c');
+      expect (state.generation).to.equal (2);
+      expect (state.shouldUpdate (1)).to.be.false ();
+      expect (state.shouldUpdate (2)).to.be.true ();
+      expect (state.shouldUpdate (3)).to.be.true ();
+    });
+  });
 });

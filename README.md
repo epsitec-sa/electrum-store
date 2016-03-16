@@ -100,6 +100,27 @@ expect (state1).to.not.equal (state2);
 expect (state2.generation).to.equal (1);
 ```
 
+## Check the generation
+
+State has an intrinsic _generation_ which can be retrieved with the
+`generation` property. As soon as a state is attached to a store, its
+generation will be a strictly positive integer (1...n).
+
+The helper method `shouldUpdate()` returns `true` when the provided
+generation is compatible with the state's own generation (i.e. equal
+or more recent to the state generation).
+
+```javascript
+const store = Store.create ();
+store.select ('a');
+store.select ('a.b');
+const state = store.select ('a.b');
+expect (state.generation).to.equal (2);
+expect (state.shouldUpdate (1)).to.be.false ();  // provided gen=1 older than state.generation 
+expect (state.shouldUpdate (2)).to.be.true ();
+expect (state.shouldUpdate (3)).to.be.true ();
+```
+
 # State
 
 State holds following information:

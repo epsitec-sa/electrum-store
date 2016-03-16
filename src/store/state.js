@@ -181,6 +181,10 @@ class State {
       return access (State.join (this._id, id));
     }
   }
+  
+  shouldUpdate (generation) {
+    return !generation || generation >= this.generation;
+  }
 
   static create (...args) {
     if (args.length === 0) {
