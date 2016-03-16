@@ -1,6 +1,7 @@
 'use strict';
 
 import 'babel-polyfill';
+import {isPositiveInt} from 'electrum-utils';
 
 const emptyValues = {};
 const secretKey = {};
@@ -181,7 +182,7 @@ class State {
       return access (State.join (this._id, id));
     }
   }
-  
+
   shouldUpdate (generation) {
     return !generation || generation >= this.generation;
   }
@@ -212,6 +213,9 @@ class State {
     for (let i = 0; i < args.length; ++i) {
       const arg = args[i];
       if ((typeof arg !== 'string') || arg.length === 0) {
+        if (typeof arg === 'number' && isPositiveInt (arg)) {
+          continue;
+        }
         throw new Error ('State.join expects non-empty string ids');
       }
     }
