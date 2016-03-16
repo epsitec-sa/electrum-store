@@ -121,6 +121,44 @@ expect (state.shouldUpdate (2)).to.be.true ();
 expect (state.shouldUpdate (3)).to.be.true ();
 ```
 
+## Apply state as an object
+
+Setting the state in the store requires calls to `select()` to proper
+node and then changing the state's internal values using `set()`. This
+can quickly become cumbersome if the state we want to set is stored as
+a Plain Old JavaScript Object (POJO).
+
+```javascript
+const store = Store.create ();
+store.select ('a.b').set ('x', 10, 'y', 20);
+const pojo = {x: 15, name: 'foo', c: {value: 'bar'}};
+store.apply ('a.b', pojo);
+expect (store.select ('a.b').get ('x')).to.equal (15);
+expect (store.select ('a.b').get ('y')).to.equal (20);
+expect (store.select ('a.b').get ('name')).to.equal ('foo');
+expect (store.select ('a.b.c').get ('value')).to.equal ('bar'); 
+```
+
+The `apply()` method also accepts objects with arrays, such as:
+
+```javascript
+const store = Store.create ();
+const pojo = {items: ['x', {value: 'bar'}]};
+store.apply ('a', pojo);
+expect (store.select ('a.items.0').get ()).to.equal ('x');
+expect (store.select ('a.items.1').get ('value')).to.equal ('bar');
+```
+
+...or even arrays, directly:
+
+```javascript
+const store = Store.create ();
+const pojo = ['x', {value: 'bar'}];
+store.apply ('a', pojo);
+expect (store.select ('a.0').get ()).to.equal ('x');
+expect (store.select ('a.1').get ('value')).to.equal ('bar');
+```
+
 # State
 
 State holds following information:

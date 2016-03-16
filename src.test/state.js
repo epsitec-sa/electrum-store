@@ -303,7 +303,7 @@ describe ('State', () => {
       expect (store.find ('a.b.c').getInherited ('y')).to.equal (3);
     });
   });
-  
+
   describe ('shouldUpdate', () => {
     it ('returns true for unknown generations', () => {
       const store = Store.create ();
@@ -313,7 +313,7 @@ describe ('State', () => {
       expect (state.shouldUpdate ()).to.be.true ();
       expect (state.shouldUpdate (0)).to.be.true ();
     });
-    
+
     it ('returns true only for compatible generations', () => {
       const store = Store.create ();
       store.select ('a');

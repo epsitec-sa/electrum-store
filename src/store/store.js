@@ -132,6 +132,35 @@ class Store {
     }
   }
 
+  apply (id, obj) {
+    // Apply changes described as an object.
+    // - A value (number, string, boolean) will be set directly.
+    // - An object will be applied as a child node (recursively).
+    // - An array will be treated like an object; indexes => keys.
+
+    if (Array.isArray (obj)) {
+      for (let i = 0; i < obj.length; i++) {
+        this.apply (State.join (id, i), obj[i]);
+      }
+    } else if (typeof obj === 'object') {
+      const keys = Object.keys (obj);
+      keys.forEach (key => {
+        const value = obj[key];
+        if (typeof value === 'object') {
+          this.apply (State.join (id, key), value);
+        } else {
+          this
+            .select (id)
+            .set (key, value);
+        }
+      });
+    } else {
+      this
+        .select (id)
+        .set (obj);
+    }
+  }
+
   find (id) {
     if (arguments.length === 0) {
       return this.root;
