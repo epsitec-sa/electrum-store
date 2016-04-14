@@ -146,7 +146,11 @@ class Store {
       const keys = Object.keys (obj);
       keys.forEach (key => {
         const value = obj[key];
-        if (typeof value === 'object') {
+        if (value === null) {
+          this
+            .select (id)
+            .set (key, null);
+        } else if (typeof value === 'object') {
           this.apply (State.join (id, key), value);
         } else {
           this

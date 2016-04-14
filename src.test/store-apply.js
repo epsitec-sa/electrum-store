@@ -86,6 +86,14 @@ describe ('Store', () => {
       expect (store.select ('a.items.1').get ('value')).to.equal ('bar');
     });
 
+    it ('accepts null values', () => {
+      const store = Store.create ();
+      const pojo = {x: 1, y: null};
+      store.apply ('a', pojo);
+      expect (store.select ('a').get ('x')).to.equal (1);
+      expect (store.select ('a').get ('y')).to.be.null ();
+    });
+
     it ('does not mutate store if nothing changes', () => {
       const store = Store.create ();
 
