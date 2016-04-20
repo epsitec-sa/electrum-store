@@ -116,7 +116,7 @@ store.select ('a');
 store.select ('a.b');
 const state = store.select ('a.b');
 expect (state.generation).to.equal (2);
-expect (state.shouldUpdate (1)).to.be.false ();  // provided gen=1 older than state.generation 
+expect (state.shouldUpdate (1)).to.be.false ();  // provided gen=1 older than state.generation
 expect (state.shouldUpdate (2)).to.be.true ();
 expect (state.shouldUpdate (3)).to.be.true ();
 ```
@@ -136,7 +136,7 @@ store.apply ('a.b', pojo);
 expect (store.select ('a.b').get ('x')).to.equal (15);
 expect (store.select ('a.b').get ('y')).to.equal (20);
 expect (store.select ('a.b').get ('name')).to.equal ('foo');
-expect (store.select ('a.b.c').get ('value')).to.equal ('bar'); 
+expect (store.select ('a.b.c').get ('value')).to.equal ('bar');
 ```
 
 The `apply()` method also accepts objects with arrays, such as:
@@ -295,6 +295,35 @@ expect (state3.get ()).to.equal ('a');
 expect (state4.get ('x')).to.equal (1);
 expect (state4.get ('y')).to.equal (2);
 ```
+
+## Setting values freezes them
+
+When setting values on a state object, we do not want them to be
+mutated arbitrarily by an external source (at least at the top
+level).
+
+In order to prevent mutation of values stored in a state object,
+every value is automatically frozen (`Object.freeze()`):
+
+```javascript
+const state = State.create ('a').set ('x', {foo: 'bar'});
+expect (Object.isFrozen (state.get ('x'))).to.be.true ();
+expect (() => state.get ('x').foo = 'baz').to.throw ();
+```
+
+If the value is an array, the values of the array will also be
+frozen (recursively for sub-arrays).
+
+## Explicit freeze API
+
+The `State` class exposes two methods to explicitly freeze
+objects:
+
+* `State.freeze(obj)` &rarr; freezes recursively the full object
+  tree.
+* `State.freezeTop(obj)` &rarr; freezes the object; if it is an
+  array, then every item of the array will be frozen by calling
+  `freezeTop()` recursively.
 
 ## Mutate state in a store
 

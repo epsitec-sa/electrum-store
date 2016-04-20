@@ -6,6 +6,9 @@ import {isPositiveInt} from 'electrum-utils';
 const emptyValues = {};
 const secretKey = {};
 
+Object.freeze (emptyValues);
+Object.freeze (secretKey);
+
 function isPositiveInteger (value) {
   if (typeof value === 'number') {
     if (Math.floor (value) === value && value >= 0) {
@@ -51,8 +54,13 @@ class State {
     if (typeof values !== 'object') {
       throw new Error ('State expects valid initial values');
     }
-    if (values.length === 0) {
+    if (isEmpty (values)) {
       values = emptyValues; // optimize for values set to {}
+    } else {
+      Object.freeze (values);
+      for (let key of Object.getOwnPropertyNames (values)) {
+        State.freezeTop (values[key]);
+      }
     }
 
     this._id = id;
@@ -333,6 +341,27 @@ class State {
         }
       }
       return state;
+    }
+  }
+
+  static freeze (obj) {
+    if (Array.isArray (obj)) {
+      obj.forEach (x => State.freeze (x));
+    }
+    if (obj && typeof obj === 'object') {
+      Object.freeze (obj);
+      for (let key of Object.getOwnPropertyNames (obj)) {
+        State.freeze (obj[key]);
+      }
+    }
+  }
+
+  static freezeTop (obj) {
+    if (Array.isArray (obj)) {
+      obj.forEach (x => State.freezeTop (x));
+    }
+    if (obj && typeof obj === 'object') {
+      Object.freeze (obj);
     }
   }
 }

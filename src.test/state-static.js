@@ -30,6 +30,14 @@ describe ('State', () => {
       expect (state.get ()).to.equal (123);
       expect (state.get ('foo')).to.equal ('bar');
     });
+
+    it ('freezes the initial values', () => {
+      const state = State.create ('a', {o: {foo: 'bar'}});
+      const ref = state.get ('o');
+      expect (ref).to.deep.equal ({foo: 'bar'});
+      expect (() => ref.foo = 'baz').to.throw ();
+      expect (ref).to.deep.equal ({foo: 'bar'});
+    });
   });
 
   describe ('State.join()', () => {
@@ -160,6 +168,53 @@ describe ('State', () => {
       const state = State.create ('a');
       expect (() => State.with (state)).to.throw (Error);
       expect (() => State.with (state, {foo: 'bar'})).to.throw (Error);
+    });
+  });
+
+  describe ('State.freeze()', () => {
+    it ('accepts plain values', () => {
+      expect (() => State.freeze (undefined)).to.not.throw ();
+      expect (() => State.freeze (1)).to.not.throw ();
+      expect (() => State.freeze ('hello')).to.not.throw ();
+      expect (() => State.freeze (function (x) {
+        return x;
+      })).to.not.throw ();
+    });
+
+    it ('freezes deeply an object', () => {
+      const obj = {x: 1, y: {a: ['A', [{q: 'Q'}]]}};
+      State.freeze (obj);
+      expect (Object.isFrozen (obj)).to.be.true ();
+      expect (Object.isFrozen (obj.x)).to.be.true ();
+      expect (Object.isFrozen (obj.y)).to.be.true ();
+      expect (Object.isFrozen (obj.y.a)).to.be.true ();
+      expect (Object.isFrozen (obj.y.a[0])).to.be.true ();
+      expect (Object.isFrozen (obj.y.a[1])).to.be.true ();
+      expect (Object.isFrozen (obj.y.a[1][0])).to.be.true ();
+      expect (Object.isFrozen (obj.y.a[1][0].q)).to.be.true ();
+      //  Just to make sure...
+      expect (() => obj.y.a[1][0].r = 'R').to.throw ();
+    });
+  });
+
+  describe ('State.freezeTop()', () => {
+    it ('freezes top level only', () => {
+      const obj = {x: 1, y: {a: 'A'}};
+      State.freezeTop (obj);
+      expect (Object.isFrozen (obj)).to.be.true ();
+      expect (Object.isFrozen (obj.x)).to.be.true ();
+      expect (Object.isFrozen (obj.y)).to.be.false ();
+      expect (() => obj.y.a = 'B').to.not.throw ();
+    });
+
+    it ('freezes top level only, but walks arrays', () => {
+      const obj = [{x: 1, y: {a: 'A'}}];
+      State.freezeTop (obj);
+      expect (Object.isFrozen (obj)).to.be.true ();
+      expect (Object.isFrozen (obj[0])).to.be.true ();
+      expect (Object.isFrozen (obj[0].x)).to.be.true ();
+      expect (Object.isFrozen (obj[0].y)).to.be.false ();
+      expect (() => obj[0].y.a = 'B').to.not.throw ();
     });
   });
 });

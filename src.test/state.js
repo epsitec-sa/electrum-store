@@ -37,7 +37,7 @@ describe ('State', () => {
   });
 
   describe ('set()', () => {
-    it ('produces new instance of state', () => {
+    it ('produces new instance of state (with key)', () => {
       const state1 = State.create ('a', {a: 1});
       const state2 = state1.set ('b', 2);
       expect (state1.get ('a')).to.equal (1);
@@ -45,11 +45,53 @@ describe ('State', () => {
       expect (state2.get ('b')).to.equal (2);
     });
 
-    it ('produces new instance of state', () => {
+    it ('produces new instance of state (without key)', () => {
       const state1 = State.create ('a', {'': 'x'});
       const state2 = state1.set ('y');
       expect (state1.get ()).to.equal ('x');
       expect (state2.get ()).to.equal ('y');
+    });
+
+    it ('freezes an object value', () => {
+      const state = State.create ('a').set ('x', {a: 1});
+      const ref = state.get ('x');
+      expect (ref).to.deep.equal ({a: 1});
+      expect (() => ref.a = 2).to.throw ();
+      expect (ref).to.deep.equal ({a: 1});
+    });
+
+    it ('freezes an array value', () => {
+      const state = State.create ('a').set ('x', [1, 2]);
+      const ref = state.get ('x');
+      expect (ref).to.deep.equal ([1, 2]);
+      expect (() => ref.a.push (3)).to.throw ();
+      expect (ref).to.deep.equal ([1, 2]);
+    });
+
+    it ('freezes the top level of an object', () => {
+      const state = State.create ('a').set ('x', [{a: 1}, {b: {x: 2}}]);
+      const ref = state.get ('x');
+      expect (Object.isFrozen (ref[0])).to.be.true ();
+      expect (Object.isFrozen (ref[1])).to.be.true ();
+      expect (Object.isFrozen (ref[1].b)).to.be.false ();
+      expect (ref).to.deep.equal ([{a: 1}, {b: {x: 2}}]);
+      expect (() => ref[0].a = 0).to.throw ();
+      expect (() => ref[1].b = 0).to.throw ();
+      expect (() => ref[1].b.x = 0).to.not.throw ();
+      expect (ref).to.deep.equal ([{a: 1}, {b: {x: 0}}]);
+    });
+
+    it ('freezes deeply arrays up to the top level objects', () => {
+      const state = State.create ('a').set ('x', [{a: 1}, [{b: {x: 2}}]]);
+      const ref = state.get ('x');
+      expect (Object.isFrozen (ref[0])).to.be.true ();
+      expect (Object.isFrozen (ref[1])).to.be.true ();
+      expect (Object.isFrozen (ref[1][0])).to.be.true ();
+      expect (Object.isFrozen (ref[1][0].b)).to.be.false ();
+      expect (ref).to.deep.equal ([{a: 1}, [{b: {x: 2}}]]);
+      expect (() => ref[0].a = 0).to.throw ();
+      expect (() => ref[1][0].b.x = 0).to.not.throw ();
+      expect (ref).to.deep.equal ([{a: 1}, [{b: {x: 0}}]]);
     });
   });
 
