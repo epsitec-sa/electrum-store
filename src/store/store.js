@@ -165,6 +165,38 @@ class Store {
     }
   }
 
+  applyCollection (id, obj, defaultKey = '') {
+    if (typeof obj === 'undefined') {
+      return;
+    }
+    if (Array.isArray (obj)) {
+      // Array should contain objects with {offset: ..., id: ..., value: ...}
+      if (obj.some (x => x.offset === undefined)) {
+        throw new Error ('applyCollection expects an array of {offset: ...}');
+      }
+      obj.forEach (obj => {
+        const childId = State.join (id, obj.offset);
+        this
+          .select (childId)
+          .set ('offset', obj.offset, 'id', obj.id, 'value', obj.value);
+        this.applyCollection (childId, obj.value, defaultKey);
+      });
+    } else if (typeof obj === 'object') {
+      const keys = Object.keys (obj);
+      keys.forEach (key => {
+        const value = obj[key];
+        this
+          .select (id)
+          .set (key, value);
+        this.applyCollection (State.join (id, key), value, defaultKey);
+      });
+    } else {
+      this
+        .select (id)
+        .set (defaultKey, obj);
+    }
+  }
+
   find (id) {
     if (arguments.length === 0) {
       return this.root;

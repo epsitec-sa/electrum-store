@@ -159,6 +159,43 @@ expect (store.select ('a.0').get ()).to.equal ('x');
 expect (store.select ('a.1').get ('value')).to.equal ('bar');
 ```
 
+## Apply and interpret collection items
+
+Sometimes, we need to fill the state with a collection of items,
+but we need to be able to specify the index of very item (e.g.
+to display lists in the user interface).
+
+* `applyCollection (id, array, defaultKey = '')` &rarr; sets nodes
+  on the store, starting at root `id`. If `defaultKey` is provided,
+  it is used to `set()` the values on the nodes; otherwise, values
+  are set using the keyless `set(value)` method.
+
+The specialized `applyCollection()` method interprets the provided
+array and populates the store by creating nodes using a set of
+conventions. The array items should be objects with at least
+following properties:
+
+* `offset` &rarr; the index (key) into the collection.
+* `value` &rarr; the value to apply or set. The value will be set
+  on the state node. If the value is an object, its content will
+  also be interpreted to create children nodes.
+
+```javascript
+const store = Store.create ();
+const array = [
+  {offset: 10, id: 'x', value: {year: 2016, name: 'foo'}}, // children year and name
+  {offset: 12, id: 'y', value: {year: 1984, name: 'bar'}}, // children year and name
+  {offset: 13, id: 'z', value: 'none'} // no children, plain value only
+];
+
+store.applyCollection ('root', array);
+
+expect (store.select ('root.10.year').get ()).to.equal (2016);
+expect (store.select ('root.12.name').get ()).to.equal ('bar');
+expect (store.select ('root.10').get ('value')).to.deep.equal ({year: 2016, name: 'foo'});
+expect (store.select ('root.13').get ('value')).to.equal ('none');
+```
+
 # State
 
 State holds following information:
