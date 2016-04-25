@@ -185,10 +185,13 @@ class Store {
       const keys = Object.keys (obj);
       keys.forEach (key => {
         const value = obj[key];
-        this
-          .select (id)
-          .set (key, value);
-        this.applyCollection (State.join (id, key), value, defaultKey);
+        if (key === defaultKey) {
+          this
+            .select (id)
+            .set (key, value);
+        } else {
+          this.applyCollection (State.join (id, key), value, defaultKey);
+        }
       });
     } else {
       this

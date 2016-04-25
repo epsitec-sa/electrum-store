@@ -45,6 +45,18 @@ describe ('Store', () => {
       expect (store.find ('root.2.name').get ('value')).to.equal ('foo');
     });
 
+    it ('treats value named with default key as an entry value', () => {
+      const store = Store.create ();
+      const data  = {a: {x: 'X'}, b: {value: 'Y'}};
+
+      store.applyCollection ('root', data, 'value'); // defaultKey is 'value'
+
+      expect (store.find ('root.a').get ('x')).to.be.undefined ();
+      expect (store.find ('root.a.x').get ('value')).to.equal ('X');
+      expect (store.find ('root.b').get ('value')).to.equal ('Y');
+      expect (store.find ('root.b.value')).to.not.exist ();
+    });
+
     it ('accepts empty values', () => {
       const store = Store.create ();
       const array = [
@@ -65,6 +77,22 @@ describe ('Store', () => {
       const array = [{id: 'x', value: 'X'}];
 
       expect (() => store.applyCollection ('root', array, 'value')).to.throw ('expects an array');
+    });
+
+    it ('example from README works', () => {
+      const store = Store.create ();
+      const array = [
+        {offset: 10, id: 'x', value: {year: 2016, name: 'foo'}}, // children year and name
+        {offset: 12, id: 'y', value: {year: 1984, name: 'bar'}}, // children year and name
+        {offset: 13, id: 'z', value: 'none'} // no children, plain value only
+      ];
+
+      store.applyCollection ('root', array);
+
+      expect (store.select ('root.10.year').get ()).to.equal (2016);
+      expect (store.select ('root.12.name').get ()).to.equal ('bar');
+      expect (store.select ('root.10').get ('value')).to.deep.equal ({year: 2016, name: 'foo'});
+      expect (store.select ('root.13').get ('value')).to.equal ('none');
     });
   });
 });
