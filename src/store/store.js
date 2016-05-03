@@ -175,25 +175,33 @@ class Store {
       if (obj.some (x => x.offset === undefined)) {
         throw new Error ('applyCollection expects an array of {offset: ...}');
       }
-      obj.forEach (obj => {
-        const childId = State.join (id, obj.offset);
-        this
-          .select (childId)
-          .set ('offset', obj.offset, 'id', obj.id, 'value', obj.value);
-        this.applyCollection (childId, obj.value, defaultKey);
-      });
+      if (obj.length > 0) {
+        obj.forEach (obj => {
+          const childId = State.join (id, obj.offset);
+          this
+            .select (childId)
+            .set ('offset', obj.offset, 'id', obj.id, 'value', obj.value);
+          this.applyCollection (childId, obj.value, defaultKey);
+        });
+      } else {
+        this.remove (id);
+      }
     } else if (typeof obj === 'object') {
       const keys = Object.keys (obj);
-      keys.forEach (key => {
-        const value = obj[key];
-        if (key === defaultKey) {
-          this
-            .select (id)
-            .set (key, value);
-        } else {
-          this.applyCollection (State.join (id, key), value, defaultKey);
-        }
-      });
+      if (obj.length > 0) {
+        keys.forEach (key => {
+          const value = obj[key];
+          if (key === defaultKey) {
+            this
+              .select (id)
+              .set (key, value);
+          } else {
+            this.applyCollection (State.join (id, key), value, defaultKey);
+          }
+        });
+      } else {
+        this.remove (id);
+      }
     } else {
       this
         .select (id)
