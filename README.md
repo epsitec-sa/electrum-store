@@ -180,6 +180,8 @@ following properties:
   on the state node. If the value is an object, its content will
   also be interpreted to create children nodes.
 
+An empty array remove the root node (privided with `id`) and it's childrens.
+
 ```javascript
 const store = Store.create ();
 const array = [
@@ -194,6 +196,9 @@ expect (store.select ('root.10.year').get ()).to.equal (2016);
 expect (store.select ('root.12.name').get ()).to.equal ('bar');
 expect (store.select ('root.10').get ('value')).to.deep.equal ({year: 2016, name: 'foo'});
 expect (store.select ('root.13').get ('value')).to.equal ('none');
+
+// remove this collection with:
+store.applyCollection ('root', []);
 ```
 
 # State
