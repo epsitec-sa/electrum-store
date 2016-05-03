@@ -174,13 +174,17 @@ class Store {
       if (obj.some (x => x.offset === undefined)) {
         throw new Error ('applyCollection expects an array of {offset: ...}');
       }
-      obj.forEach (obj => {
-        const childId = State.join (id, obj.offset);
-        this
-          .select (childId)
-          .set ('offset', obj.offset, 'id', obj.id, 'value', obj.value);
-        this.applyCollection (childId, obj.value, defaultKey);
-      });
+      if (obj.length > 0) {
+        obj.forEach (obj => {
+          const childId = State.join (id, obj.offset);
+          this
+            .select (childId)
+            .set ('offset', obj.offset, 'id', obj.id, 'value', obj.value);
+          this.applyCollection (childId, obj.value, defaultKey);
+        });
+      } else {
+        this.remove (id);
+      }
     } else if (typeof obj === 'object') {
       const keys = Object.keys (obj);
       keys.forEach (key => {
