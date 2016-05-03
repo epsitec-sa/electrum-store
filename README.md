@@ -176,9 +176,12 @@ conventions. The array items should be objects with at least
 following properties:
 
 * `offset` &rarr; the index (key) into the collection.
-* `value` &rarr; the value to apply or set. The value will be set
-  on the state node. If the value is an object, its content will
-  also be interpreted to create children nodes.
+* `value` &rarr; the value to apply or set. If the value is an object,
+  its content will be interpreted to create children nodes. Otherwise,
+  the value will be set on the state node directly.
+
+Note: if you do not specify `value`, the corresponding node will
+be removed altogether.
 
 ```javascript
 const store = Store.create ();

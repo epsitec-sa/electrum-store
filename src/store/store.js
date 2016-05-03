@@ -165,21 +165,25 @@ class Store {
     }
   }
 
-  applyCollection (id, obj, defaultKey = '') {
+  applyChanges (id, obj, defaultKey = '') {
     if (typeof obj === 'undefined') {
       return;
     }
     if (Array.isArray (obj)) {
       // Array should contain objects with {offset: ..., id: ..., value: ...}
       if (obj.some (x => x.offset === undefined)) {
-        throw new Error ('applyCollection expects an array of {offset: ...}');
+        throw new Error ('applyChanges expects an array of {offset: ...}');
       }
       obj.forEach (obj => {
         const childId = State.join (id, obj.offset);
-        this
-          .select (childId)
-          .set ('offset', obj.offset, 'id', obj.id, 'value', obj.value);
-        this.applyCollection (childId, obj.value, defaultKey);
+        if ('value' in obj) {
+          this
+            .select (childId)
+            .set ('offset', obj.offset, 'id', obj.id, 'value', obj.value);
+          this.applyChanges (childId, obj.value, defaultKey);
+        } else {
+          this.remove (childId);
+        }
       });
     } else if (typeof obj === 'object') {
       const keys = Object.keys (obj);
@@ -190,7 +194,7 @@ class Store {
             .select (id)
             .set (key, value);
         } else {
-          this.applyCollection (State.join (id, key), value, defaultKey);
+          this.applyChanges (State.join (id, key), value, defaultKey);
         }
       });
     } else {
