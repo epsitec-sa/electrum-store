@@ -105,6 +105,27 @@ describe ('Store', () => {
       expect (store.find ('root.13.year').get ()).to.equal (1999);
     });
     
+    it ('interprets array property', () => {
+      const store = Store.create ();
+      const info = {
+        $apply: 'props',
+        name: 'foo',
+        array: [
+          {offset: 10, id: 'x', value: {year: 2016, name: 'foo'}},
+          {offset: 12, id: 'y', value: {$apply: 'props', year: 1984, name: 'bar'}}
+        ]
+      };
+      // Properties year/name will be set on node 12 directly 
+      store.applyChanges ('root', info);
+      expect (store.find ('root').get ('name')).to.equal ('foo');
+      expect (store.find ('root.10.year').get ()).to.equal (2016);
+      expect (store.find ('root.10.name').get ()).to.equal ('foo');
+      expect (store.find ('root.12.year')).to.not.exist ();
+      expect (store.find ('root.12.name')).to.not.exist ();
+      expect (store.find ('root.12').get ('year')).to.equal (1984);
+      expect (store.find ('root.12').get ('name')).to.equal ('bar');
+    });
+
     it ('removes entries in array', () => {
       const store = Store.create ();
       const array1 = [
@@ -162,6 +183,27 @@ describe ('Store', () => {
       expect (store.find ('root.12.name')).to.not.exist ();
       expect (store.find ('root.12').get ('year')).to.equal (1984);
       expect (store.find ('root.12').get ('name')).to.equal ('bar');
+    });
+    
+    it ('example (3) from README works', () => {
+      const store = Store.create ();
+      const changes = {
+        $apply: 'props',
+        name: 'John',
+        age: 42,
+        array: [
+          {offset: 1, id: 'x', value: {x: 10}},
+          {offset: 2, id: 'y', value: {y: 20}}
+        ]
+      };
+
+      // Properties name/age will be set on root node directly, and
+      // the array will be applied on root too. 
+      store.applyChanges ('root', changes);
+      expect (store.find ('root').get ('name')).to.equal ('John');
+      expect (store.find ('root').get ('age')).to.equal (42);
+      expect (store.find ('root.1.x').get ()).to.equal (10);
+      expect (store.find ('root.2.y').get ()).to.equal (20);
     });
   });
 });

@@ -209,6 +209,16 @@ class Store {
         // Special case: treat the object properties as values to set on
         // the state node, as simple properties.
         keys.forEach (key => {
+          if (key === '$apply') {
+            // Do not store meta-properties
+            return;
+          }
+          if (key === 'array') {
+            // Process the array as if it had been passed in at the top
+            // level of this function.
+            this.applyChanges (id, obj[key], defaultKey);
+            return;
+          }
           this
             .select (id)
             .set (key, obj[key]);

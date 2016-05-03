@@ -232,7 +232,34 @@ expect (store.find ('root.12.year')).to.not.exist ();
 expect (store.find ('root.12.name')).to.not.exist ();
 expect (store.find ('root.12').get ('year')).to.equal (1984);
 expect (store.find ('root.12').get ('name')).to.equal ('bar');
-``` 
+```
+
+## Special `array` property
+
+When applying specially tagged objects (using `$apply: 'props'`),
+a property `array` will be treated as if it had been set at the
+containing level:
+
+```javascript
+const store = Store.create ();
+const changes = {
+  $apply: 'props',
+  name: 'John',
+  age: 42,
+  array: [
+    {offset: 1, id: 'x', value: {x: 10}},
+    {offset: 2, id: 'y', value: {y: 20}}
+  ]
+};
+
+// Properties name/age will be set on root node directly, and
+// the array will be applied on root too. 
+store.applyChanges ('root', changes);
+expect (store.find ('root').get ('name')).to.equal ('John');
+expect (store.find ('root').get ('age')).to.equal (42);
+expect (store.find ('root.1.x').get ()).to.equal (10);
+expect (store.find ('root.2.y').get ()).to.equal (20);
+```
 
 # State
 
