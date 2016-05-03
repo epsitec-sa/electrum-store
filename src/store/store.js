@@ -167,7 +167,6 @@ class Store {
 
   applyCollection (id, obj, defaultKey = '') {
     if (typeof obj === 'undefined') {
-      this.remove (id);
       return;
     }
     if (Array.isArray (obj)) {
@@ -188,20 +187,16 @@ class Store {
       }
     } else if (typeof obj === 'object') {
       const keys = Object.keys (obj);
-      if (obj.length > 0) {
-        keys.forEach (key => {
-          const value = obj[key];
-          if (key === defaultKey) {
-            this
-              .select (id)
-              .set (key, value);
-          } else {
-            this.applyCollection (State.join (id, key), value, defaultKey);
-          }
-        });
-      } else {
-        this.remove (id);
-      }
+      keys.forEach (key => {
+        const value = obj[key];
+        if (key === defaultKey) {
+          this
+            .select (id)
+            .set (key, value);
+        } else {
+          this.applyCollection (State.join (id, key), value, defaultKey);
+        }
+      });
     } else {
       this
         .select (id)

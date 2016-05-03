@@ -94,5 +94,12 @@ describe ('Store', () => {
       expect (store.select ('root.10').get ('value')).to.deep.equal ({year: 2016, name: 'foo'});
       expect (store.select ('root.13').get ('value')).to.equal ('none');
     });
+
+    it ('handle empty array collections', () => {
+      const store = Store.create ();
+      const emptyArray = [];
+      store.applyCollection ('root', emptyArray, 'value');
+      expect (store.find ('root')).to.not.exist ();
+    });
   });
 });
