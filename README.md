@@ -159,13 +159,13 @@ expect (store.select ('a.0').get ()).to.equal ('x');
 expect (store.select ('a.1').get ('value')).to.equal ('bar');
 ```
 
-## Apply and interpret collection items
+## Apply changes, interpret collection items
 
 Sometimes, we need to fill the state with a collection of items,
 but we need to be able to specify the index of very item (e.g.
 to display lists in the user interface).
 
-* `applyCollection (id, array, defaultKey = '')` &rarr; sets nodes
+* `applyChanges (id, array, defaultKey = '')` &rarr; sets nodes
   on the store, starting at root `id`. If `defaultKey` is provided,
   it is used to `set()` the values on the nodes; otherwise, values
   are set using the keyless `set(value)` method.
@@ -176,28 +176,63 @@ conventions. The array items should be objects with at least
 following properties:
 
 * `offset` &rarr; the index (key) into the collection.
-* `value` &rarr; the value to apply or set. If the value is an object,
-  its content will be interpreted to create children nodes. Otherwise,
-  the value will be set on the state node directly.
-
-Note: if you do not specify `value`, the corresponding node will
-be removed altogether.
+* `value` &rarr; the value to apply or set.
+  * If the value is an object, its content will be interpreted to create children nodes.
+  * If the value is missing or `undefined`, the corresponding subtree will be removed.
+  * If the value is an array, it will be interpreted.
+  * If the value is a simple value type, it will be set on the state node directly.
 
 ```javascript
 const store = Store.create ();
 const array = [
   {offset: 10, id: 'x', value: {year: 2016, name: 'foo'}}, // children year and name
   {offset: 12, id: 'y', value: {year: 1984, name: 'bar'}}, // children year and name
-  {offset: 13, id: 'z', value: 'none'} // no children, plain value only
+  {offset: 13, id: 'z', value: 'hello'} // no children, plain value only
 ];
 
-store.applyCollection ('root', array);
+// Create 3 nodes in the tree, with children for nodes 10 and 12
+store.applyChanges ('root', array);
+expect (store.find ('root.10.year').get ()).to.equal (2016);
+expect (store.find ('root.12.name').get ()).to.equal ('bar');
+expect (store.find ('root.10').get ('value')).to.not.exist ();
+expect (store.find ('root.13').get ('value')).to.equal ('hello');
 
-expect (store.select ('root.10.year').get ()).to.equal (2016);
-expect (store.select ('root.12.name').get ()).to.equal ('bar');
-expect (store.select ('root.10').get ('value')).to.deep.equal ({year: 2016, name: 'foo'});
-expect (store.select ('root.13').get ('value')).to.equal ('none');
+// Replace entry 12 by updating only the year; the name won't be updated
+store.applyChanges ('root', [{offset: 12, id: 'y', value: {year: 1986}}]);
+expect (store.find ('root.12.year').get ()).to.equal (1986);
+expect (store.find ('root.12.name').get ()).to.equal ('bar');
+
+// Remove entry 12 in the store - no value specified...
+store.applyChanges ('root', [{offset: 12}]);
+expect (store.find ('root.12')).to.not.exist ();
 ```
+
+## Setting properties on nodes
+
+The `store.applyChanges()` method can also be used to set the
+key/value properties on the nodes, rather than creating child
+nodes for every provided object property.
+
+Object properties will be interpreted as node properties if
+the object contains the special property `$apply` set to
+`props`.
+
+```javascript
+const store = Store.create ();
+const array = [
+  {offset: 10, id: 'x', value: {year: 2016, name: 'foo'}},
+  {offset: 12, id: 'y', value: {$apply: 'props', year: 1984, name: 'bar'}}
+];
+
+// Properties year/name will be set on node 12 directly 
+store.applyChanges ('root', array);
+expect (store.find ('root.10.year').get ()).to.equal (2016);
+expect (store.find ('root.10.name').get ()).to.equal ('foo');
+expect (store.find ('root.12.year')).to.not.exist ();
+expect (store.find ('root.12.name')).to.not.exist ();
+expect (store.find ('root.12').get ('year')).to.equal (1984);
+expect (store.find ('root.12').get ('name')).to.equal ('bar');
+``` 
 
 # State
 

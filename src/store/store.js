@@ -169,39 +169,73 @@ class Store {
     if (typeof obj === 'undefined') {
       return;
     }
+
+    // [ {offset: ..., id: ..., value: ...} ...]
     if (Array.isArray (obj)) {
-      // Array should contain objects with {offset: ..., id: ..., value: ...}
       if (obj.some (x => x.offset === undefined)) {
         throw new Error ('applyChanges expects an array of {offset: ...}');
       }
       obj.forEach (obj => {
         const childId = State.join (id, obj.offset);
-        if ('value' in obj) {
+        if (obj.value === undefined) {
+          // The item does not specify a value: this means that the caller
+          // wants to remove the subtree defined by the child node.
+          this.remove (childId);
+        } else {
+          // The item contains a value (either an object or a simple value)
+          // and we will recursively apply it on the subtree starting at the
+          // child node.
+          const value = typeof obj.value === 'object'
+                        ? undefined
+                        : obj.value;
+
+          // Create offset/id/value props on child node:
           this
             .select (childId)
-            .set ('offset', obj.offset, 'id', obj.id, 'value', obj.value);
+            .set ('offset', obj.offset, 'id', obj.id, 'value', value);
+          
           this.applyChanges (childId, obj.value, defaultKey);
-        } else {
-          this.remove (childId);
         }
       });
-    } else if (typeof obj === 'object') {
+      
+      return;
+    }
+    
+    // {x: ..., y: ...} or {$apply: ..., x: ..., y: ...}
+    if (typeof obj === 'object') {
       const keys = Object.keys (obj);
-      keys.forEach (key => {
-        const value = obj[key];
-        if (key === defaultKey) {
+      const type = obj.$apply;
+      if (type === 'props') {
+        // Special case: treat the object properties as values to set on
+        // the state node, as simple properties.
+        keys.forEach (key => {
           this
             .select (id)
-            .set (key, value);
+            .set (key, obj[key]);
+        });
+        
+        return;
+      }
+
+      // Normal case: every object property creates a new node in the
+      // state tree.
+      keys.forEach (key => {
+        const value = obj[key];
+        const childId = State.join (id, key);
+        if (value === undefined) {
+          this.remove (childId);
         } else {
-          this.applyChanges (State.join (id, key), value, defaultKey);
+          this.applyChanges (childId, value, defaultKey);
         }
       });
-    } else {
-      this
-        .select (id)
-        .set (defaultKey, obj);
+      
+      return;
     }
+    
+    // plain value
+    this
+      .select (id)
+      .set (defaultKey, obj);
   }
 
   find (id) {
