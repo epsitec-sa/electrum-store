@@ -167,6 +167,7 @@ class Store {
 
   applyCollection (id, obj, defaultKey = '') {
     if (typeof obj === 'undefined') {
+      this.remove (id);
       return;
     }
     if (Array.isArray (obj)) {
