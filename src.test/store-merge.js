@@ -4,7 +4,7 @@ import {expect} from 'mai-chai';
 import {Store} from 'electrum-store';
 
 describe ('Store', () => {
-  describe ('Store.apply()', () => {
+  describe ('Store.merge()', () => {
     it ('applies values and adds nodes', () => {
       const store = Store.create ();
 
@@ -15,7 +15,7 @@ describe ('Store', () => {
       expect (store.generation).to.equal (2);
 
       const pojo = {x: 15, name: 'foo', c: {value: 'bar'}};
-      store.apply ('a.b', pojo);
+      store.merge ('a.b', pojo);
 
       expect (store.generation).to.be.above (2);
 
@@ -35,7 +35,7 @@ describe ('Store', () => {
       expect (store.generation).to.equal (2);
 
       const pojo = {c: {'': 'default'}};
-      store.apply ('a.b', pojo);
+      store.merge ('a.b', pojo);
 
       expect (store.generation).to.be.above (2);
 
@@ -52,7 +52,7 @@ describe ('Store', () => {
       expect (store.generation).to.equal (2);
 
       const pojo = {x: 15, items: ['a', {value: 'bar'}]};
-      store.apply ('a.b', pojo);
+      store.merge ('a.b', pojo);
 
       expect (store.generation).to.be.above (2);
 
@@ -71,7 +71,7 @@ describe ('Store', () => {
       expect (store.generation).to.equal (2);
 
       const pojo = 'default';
-      store.apply ('a.b.c', pojo);
+      store.merge ('a.b.c', pojo);
 
       expect (store.generation).to.be.above (2);
 
@@ -81,7 +81,7 @@ describe ('Store', () => {
     it ('accepts a direct array', () => {
       const store = Store.create ();
       const pojo = ['x', {value: 'bar'}];
-      store.apply ('a.items', pojo);
+      store.merge ('a.items', pojo);
       expect (store.select ('a.items.0').get ()).to.equal ('x');
       expect (store.select ('a.items.1').get ('value')).to.equal ('bar');
     });
@@ -89,7 +89,7 @@ describe ('Store', () => {
     it ('accepts null values', () => {
       const store = Store.create ();
       const pojo = {x: 1, y: null};
-      store.apply ('a', pojo);
+      store.merge ('a', pojo);
       expect (store.select ('a').get ('x')).to.equal (1);
       expect (store.select ('a').get ('y')).to.be.null ();
     });
@@ -108,7 +108,7 @@ describe ('Store', () => {
       expect (store.generation).to.equal (4);
 
       const pojo = {x: 10, c: {value: 'bar'}};
-      store.apply ('a.b', pojo);
+      store.merge ('a.b', pojo);
 
       expect (store.generation).to.equal (4);
       expect (store.select ('a.b').get ('x')).to.equal (10);

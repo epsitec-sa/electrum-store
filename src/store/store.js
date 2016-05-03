@@ -132,15 +132,15 @@ class Store {
     }
   }
 
-  apply (id, obj) {
-    // Apply changes described as an object.
+  merge (id, obj) {
+    // Merges changes described as an object.
     // - A value (number, string, boolean) will be set directly.
     // - An object will be applied as a child node (recursively).
     // - An array will be treated like an object; indexes => keys.
 
     if (Array.isArray (obj)) {
       for (let i = 0; i < obj.length; i++) {
-        this.apply (State.join (id, i), obj[i]);
+        this.merge (State.join (id, i), obj[i]);
       }
     } else if (typeof obj === 'object') {
       const keys = Object.keys (obj);
@@ -151,7 +151,7 @@ class Store {
             .select (id)
             .set (key, null);
         } else if (typeof value === 'object') {
-          this.apply (State.join (id, key), value);
+          this.merge (State.join (id, key), value);
         } else {
           this
             .select (id)
