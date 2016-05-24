@@ -224,7 +224,7 @@ const array = [
   {offset: 12, id: 'y', value: {$apply: 'props', year: 1984, name: 'bar'}}
 ];
 
-// Properties year/name will be set on node 12 directly 
+// Properties year/name will be set on node 12 directly
 store.applyChanges ('root', array);
 expect (store.find ('root.10.year').get ()).to.equal (2016);
 expect (store.find ('root.10.name').get ()).to.equal ('foo');
@@ -253,7 +253,7 @@ const changes = {
 };
 
 // Properties name/age will be set on root node directly, and
-// the array will be applied on root too. 
+// the array will be applied on root too.
 store.applyChanges ('root', changes);
 expect (store.find ('root').get ('name')).to.equal ('John');
 expect (store.find ('root').get ('age')).to.equal (42);
@@ -448,3 +448,12 @@ expect (store.select ('a.b.d').generation).to.equal (2); // unchanged
 expect (store.select ('a.b').generation).to.equal (4);
 expect (store.select ('a').generation).to.equal (4);
 ```
+
+## Invalidate full store
+
+If for some reason, you want to trigger a full update of the UI,
+you might need to mark all nodes in the store as being dirty by
+mutating them.
+
+This can be done by calling `store.mutateAll()`. Every state in
+the store will be cloned and its generation will be updated.

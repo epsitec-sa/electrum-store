@@ -132,6 +132,15 @@ class Store {
     }
   }
 
+  mutateAll () {
+    changeGeneration (this);
+    const mutation = {generation: this.generation, store: this};
+    Object.keys (this._states).forEach (key => {
+      let state = this._states[key];
+      this._states[key] = State.with (state, mutation);
+    });
+  }
+
   merge (id, obj) {
     // Merges changes described as an object.
     // - A value (number, string, boolean) will be set directly.
@@ -185,22 +194,22 @@ class Store {
           // The item contains a value (either an object or a simple value)
           // and we will recursively apply it on the subtree starting at the
           // child node.
-          const value = typeof obj.value === 'object'
-                        ? undefined
+          const value = typeof obj.value === 'object' ?
+                        undefined
                         : obj.value;
 
           // Create offset/id/value props on child node:
           this
             .select (childId)
             .set ('offset', obj.offset, 'id', obj.id, 'value', value);
-          
+
           this.applyChanges (childId, obj.value, defaultKey);
         }
       });
-      
+
       return;
     }
-    
+
     // {x: ..., y: ...} or {$apply: ..., x: ..., y: ...}
     if (typeof obj === 'object') {
       const keys = Object.keys (obj);
@@ -223,7 +232,7 @@ class Store {
             .select (id)
             .set (key, obj[key]);
         });
-        
+
         return;
       }
 
@@ -238,10 +247,10 @@ class Store {
           this.applyChanges (childId, value, defaultKey);
         }
       });
-      
+
       return;
     }
-    
+
     // plain value
     this
       .select (id)
@@ -278,7 +287,7 @@ class Store {
     return Object.keys (this._states).length - 1;
   }
 
-/* static methods */
+  /* static methods */
 
   static create (id, values) {
     return new Store (id, secretKey, values);
