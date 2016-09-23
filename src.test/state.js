@@ -23,6 +23,22 @@ describe ('State', () => {
     });
   });
 
+  describe ('getPojo()', () => {
+    it ('returns a copy of the state values', () => {
+      const state = State.create ('a', {x: 'X', y: 'Y'});
+      const pojo = state.getPojo ();
+      expect (pojo).to.have.property ('x', 'X');
+      expect (pojo).to.have.property ('y', 'Y');
+    });
+
+    it ('returns a mutable object', () => {
+      const state = State.create ('a', {x: 'X', y: 'Y'});
+      const pojo = state.getPojo ();
+      pojo.x = 'foo';
+      expect (pojo).to.have.property ('x', 'foo');
+    });
+  });
+
   describe ('contains()', () => {
     it ('returns true for existing id', () => {
       const state = State.create ('a', {123: 'X', y: 'Y'});

@@ -112,6 +112,10 @@ class State {
     return this._values[id];
   }
 
+  getPojo () {
+    return {...this._values};
+  }
+
   getInherited (id) {
     const value = this.get (id);
     if (value !== undefined) {

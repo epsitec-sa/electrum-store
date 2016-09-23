@@ -281,6 +281,8 @@ accessed using `state.get(name)`.
 * `getInherited (name)` &rarr; the value for `name` if it can be found on the
   state or any of its parent nodes, otherwise `undefined`.
 * `contains (name)` &rarr; `true` if a value exists for `name`, otherwise `false`.
+* `getPojo ()` &rarr; the values as a plain old JavaScript object (POJO); the
+  object is a copy of the internal state values.
 
 ## States as arrays
 
