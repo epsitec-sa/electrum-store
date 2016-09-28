@@ -31,7 +31,7 @@ describe ('Store', () => {
       expect (store.find ('root.2.date').get ()).to.equal ('01.01.2016');
       expect (store.find ('root.2.name').get ()).to.equal ('foo');
       expect (store.find ('root.2.item.bar').get ()).to.equal ('z');
-      
+
       // Assert: object with $apply == 'props' gets handled as node properties
       expect (store.find ('root.3').get ('offset')).to.equal (3);
       expect (store.find ('root.3').get ('id')).to.equal ('z');
@@ -89,7 +89,7 @@ describe ('Store', () => {
         {offset: 12, id: 'y', value: {year: 1984, name: 'bar'}}, // children year and name
         {offset: 13, id: 'z', value: 'Z'} // no children, plain value only
       ];
-      
+
       const array2 = [
         {offset: 10, id: 'x', value: {year: 2014}}, // replace year in child node
         {offset: 13, id: 'x', value: {year: 1999}}, // replace value with node
@@ -104,7 +104,7 @@ describe ('Store', () => {
       expect (store.find ('root.13').get ('value')).to.be.undefined ();
       expect (store.find ('root.13.year').get ()).to.equal (1999);
     });
-    
+
     it ('interprets array property', () => {
       const store = Store.create ();
       const info = {
@@ -115,7 +115,7 @@ describe ('Store', () => {
           {offset: 12, id: 'y', value: {$apply: 'props', year: 1984, name: 'bar'}}
         ]
       };
-      // Properties year/name will be set on node 12 directly 
+      // Properties year/name will be set on node 12 directly
       store.applyChanges ('root', info);
       expect (store.find ('root').get ('name')).to.equal ('foo');
       expect (store.find ('root.10.year').get ()).to.equal (2016);
@@ -132,7 +132,7 @@ describe ('Store', () => {
         {offset: 10, id: 'x', value: {year: 2016, name: 'foo'}}, // children year and name
         {offset: 12, id: 'y', value: {year: 1984, name: 'bar'}}, // children year and name
       ];
-      
+
       const array2 = [
         {offset: 10}, // remove entry
       ];
@@ -140,12 +140,12 @@ describe ('Store', () => {
       store.applyChanges ('root', array1);
       expect (store.find ('root.10')).to.exist ();
       expect (store.find ('root.12')).to.exist ();
-      
+
       store.applyChanges ('root', array2);
       expect (store.find ('root.10')).to.not.exist ();
       expect (store.find ('root.12')).to.exist ();
     });
-    
+
     it ('example (1) from README works', () => {
       const store = Store.create ();
       const array = [
@@ -160,22 +160,22 @@ describe ('Store', () => {
       expect (store.find ('root.12.name').get ()).to.equal ('bar');
       expect (store.find ('root.10').get ('value')).to.not.exist ();
       expect (store.find ('root.13').get ('value')).to.equal ('hello');
-      
+
       store.applyChanges ('root', [{offset: 12, id: 'y', value: {year: 1986}}]);
       expect (store.find ('root.12.year').get ()).to.equal (1986);
       expect (store.find ('root.12.name').get ()).to.equal ('bar');
-      
+
       store.applyChanges ('root', [{offset: 12}]);
       expect (store.find ('root.12')).to.not.exist ();
     });
-    
+
     it ('example (2) from README works', () => {
       const store = Store.create ();
       const array = [
         {offset: 10, id: 'x', value: {year: 2016, name: 'foo'}},
         {offset: 12, id: 'y', value: {$apply: 'props', year: 1984, name: 'bar'}}
       ];
-      // Properties year/name will be set on node 12 directly 
+      // Properties year/name will be set on node 12 directly
       store.applyChanges ('root', array);
       expect (store.find ('root.10.year').get ()).to.equal (2016);
       expect (store.find ('root.10.name').get ()).to.equal ('foo');
@@ -184,7 +184,7 @@ describe ('Store', () => {
       expect (store.find ('root.12').get ('year')).to.equal (1984);
       expect (store.find ('root.12').get ('name')).to.equal ('bar');
     });
-    
+
     it ('example (3) from README works', () => {
       const store = Store.create ();
       const changes = {
@@ -198,7 +198,7 @@ describe ('Store', () => {
       };
 
       // Properties name/age will be set on root node directly, and
-      // the array will be applied on root too. 
+      // the array will be applied on root too.
       store.applyChanges ('root', changes);
       expect (store.find ('root').get ('name')).to.equal ('John');
       expect (store.find ('root').get ('age')).to.equal (42);
