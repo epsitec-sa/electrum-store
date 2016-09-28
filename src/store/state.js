@@ -113,7 +113,7 @@ class State {
   }
 
   getPojo () {
-    return {...this._values};
+    return this._values.pojo || {...this._values};
   }
 
   getInherited (id) {

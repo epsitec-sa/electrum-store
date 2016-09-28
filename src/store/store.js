@@ -201,7 +201,7 @@ class Store {
           // Create offset/id/value props on child node:
           this
             .select (childId)
-            .set ('offset', obj.offset, 'id', obj.id, 'value', value);
+            .set ('offset', obj.offset, 'id', obj.id, 'value', value, 'pojo', obj.value);
 
           this.applyChanges (childId, obj.value, defaultKey);
         }
