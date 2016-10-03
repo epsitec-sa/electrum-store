@@ -1,6 +1,6 @@
 {
   "name": "electrum-store",
-  "version": "3.3.1",
+  "version": "3.3.2",
   "description": "Electrum store provides a store implementation tailored for Electrum.",
   "main": "lib/index.js",
   "scripts": {

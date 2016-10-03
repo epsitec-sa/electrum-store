@@ -211,7 +211,7 @@ class Store {
     }
 
     // {x: ..., y: ...} or {$apply: ..., x: ..., y: ...}
-    if (typeof obj === 'object') {
+    if (obj && typeof obj === 'object') {
       const keys = Object.keys (obj);
       const type = obj.$apply;
       if (type === 'props') {
