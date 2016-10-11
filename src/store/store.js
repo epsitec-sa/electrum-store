@@ -44,6 +44,16 @@ function deleteStates (store, state) {
   }
 }
 
+function getNumber (x) {
+  if (x.startsWith ('[') && x.endsWith (']')) {
+    const num = parsePositiveInt (x.substr (1, x.length - 2));
+    return {value: num, raw: x};
+  } else {
+    const num = parsePositiveInt (x);
+    return {value: num, raw: num};
+  }
+}
+
 const secretKey = {};
 
 /******************************************************************************/
@@ -106,11 +116,11 @@ class Store {
 
   getIndexKeys (startId) {
     const nums = this.getIds (startId)
-                     .map (id => parsePositiveInt (State.getLeafId (id)))
-                     .filter (num => !isNaN (num));
+                     .map (id => getNumber (State.getLeafId (id)))
+                     .filter (num => !isNaN (num.value));
     // Numeric sort required here
-    nums.sort ((a, b) => a - b);
-    return nums;
+    nums.sort ((a, b) => a.value - b.value);
+    return nums.map (num => num.raw);
   }
 
   setState (state) {
