@@ -48,6 +48,9 @@ function getNumber (x) {
   if (x.startsWith ('[') && x.endsWith (']')) {
     const num = parsePositiveInt (x.substr (1, x.length - 2));
     return {value: num, raw: x};
+  } else if (x.startsWith ('_')) {
+    const num = parsePositiveInt (x.substr (1));
+    return {value: num, raw: x};
   } else {
     const num = parsePositiveInt (x);
     return {value: num, raw: num};

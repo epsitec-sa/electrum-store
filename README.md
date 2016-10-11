@@ -304,8 +304,8 @@ keys.
   integer. The values will always be sorted.  
   Example: `[0, 1, 34]`
 
-> Note: `indexKeys` also supports keys such as `[2]` and `[10]`, which will
-> also be sorted based on the integer value (`['[2]', '[10]']`).
+> Note: `indexKeys` also supports keys such as `[2]` and `_10`, which will
+> also be sorted based on the integer value (`['[2]', '_10']`).
 
 The state can also be used as a starting point for `find()` and `select()`.
 Without any argument, they return the state itself.

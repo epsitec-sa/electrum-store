@@ -10,7 +10,7 @@ describe ('Store', () => {
   store.select ('a.[1]');
   store.select ('a.z');
   store.select ('a.10');
-  store.select ('a.2');
+  store.select ('a._2');
   store.select ('a.0');
   store.select ('a.z.w');
 
@@ -18,7 +18,7 @@ describe ('Store', () => {
     it ('returns ids of children at specified id', () => {
       const arr = store.getIds ('a');
       expect (arr).to.have.length (5);
-      expect (arr).to.deep.equal (['a.[1]', 'a.z', 'a.10', 'a.2', 'a.0']);
+      expect (arr).to.deep.equal (['a.[1]', 'a.z', 'a.10', 'a._2', 'a.0']);
     });
 
     it ('returns root id when no id is specified', () => {
@@ -38,7 +38,7 @@ describe ('Store', () => {
     it ('returns sorted index keys at specified id', () => {
       const arr = store.getIndexKeys ('a');
       expect (arr).to.have.length (4);
-      expect (arr).to.deep.equal ([0, '[1]', 2, 10]);
+      expect (arr).to.deep.equal ([0, '[1]', '_2', 10]);
     });
   });
 
@@ -46,7 +46,7 @@ describe ('Store', () => {
     it ('returns sorted index ids at specified id', () => {
       const arr = store.getIndexIds ('a');
       expect (arr).to.have.length (4);
-      expect (arr).to.deep.equal (['a.0', 'a.[1]', 'a.2', 'a.10']);
+      expect (arr).to.deep.equal (['a.0', 'a.[1]', 'a._2', 'a.10']);
     });
   });
 });
