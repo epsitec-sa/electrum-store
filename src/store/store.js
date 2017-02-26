@@ -128,7 +128,15 @@ export default class Store {
     const ids = Object.getOwnPropertyNames (this._states);
     const prefix = startId + '$';
     const length = prefix.length;
-    const arities = ids.filter (id => id.startsWith (prefix) && id.indexOf ('.', length) < 0);
+
+    let arities = ids.filter (id => id.startsWith (prefix) && id.indexOf ('.', length) < 0);
+
+    const strip  = State.getParentId (startId).length + 1;
+
+    if (strip > 1) {
+      arities = arities.map (id => id.substr (strip));
+    }
+
     arities.sort (arityComparer);
     return arities;
   }

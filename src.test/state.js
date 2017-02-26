@@ -327,6 +327,18 @@ describe ('State', () => {
       expect (arr).to.deep.equal (['a$1', 'a$2', 'a$3', 'a$10']);
     });
 
+    it ('returns sorted arity keys in deep node', () => {
+      const store = Store.create ();
+      store.select ('x.a$1');
+      store.select ('x.a$10');
+      store.select ('x.a$3');
+      store.select ('x.a$2.x');
+      store.select ('x.a.b.c');
+      const state = store.find ('x.a');
+      const arr = state.arities;
+      expect (arr).to.deep.equal (['a$1', 'a$2', 'a$3', 'a$10']);
+    });
+
     it ('returns an empty array for an empty state', () => {
       const store = Store.create ();
       store.select ('a');

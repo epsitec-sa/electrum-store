@@ -318,6 +318,16 @@ Without any argument, they return the state itself.
 `select()`, `find()`, `remove()` and `any()` accept a child `id` or an index,
 which will be converted to a key and used to look up the child.
 
+## Arity
+
+If you are using the special _arity_ notation defined by Lydia (`a$0`, `a$1`,
+etc.), then you might be interested in:
+
+* `arities` &rarr; an array of all the sibling `key`s found for the current
+  node.  
+  Example: say we have nodes `a.b.c`, `a.b.c$0` and `a.b.c$1`, then calling
+  `store.find ('a.b.c').arities` will return `['c$0', 'c$1']`.
+
 ## Working with state ids
 
 State ids are similar to _paths_ where the elements are separated by `.`.
