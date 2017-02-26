@@ -1,4 +1,4 @@
-'use strict';
+/* global describe it */
 
 import {expect} from 'mai-chai';
 import {State} from 'electrum-store';
