@@ -50,6 +50,21 @@ describe ('State', () => {
     });
   });
 
+  describe ('State.getArityIndex()', () => {
+    it ('returns the index as a number', () => {
+      expect (State.getArityIndex ('a$0')).to.equal (0);
+      expect (State.getArityIndex ('a.b$0')).to.equal (0);
+      expect (State.getArityIndex ('a.b$23')).to.equal (23);
+      expect (State.getArityIndex ('a$1.b$2')).to.equal (2);
+    });
+
+    it ('returns undefined if it is not an arity', () => {
+      expect (State.getArityIndex ('a')).to.be.undefined ();
+      expect (State.getArityIndex ('a.b')).to.be.undefined ();
+      expect (State.getArityIndex ('a$1.b')).to.be.undefined ();
+    });
+  });
+
   describe ('State.getLeafId()', () => {
     it ('returns the leaf id', () => {
       expect (State.getLeafId ('a.b.c')).to.equal ('c');

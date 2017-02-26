@@ -261,6 +261,15 @@ export default class State {
     }
   }
 
+  static getArityIndex (id) {
+    const pos = id.indexOf ('$', id.indexOf ('.') + 1);
+    if (pos < 0) {
+      return undefined;
+    } else {
+      return Number (id.substring (pos + 1));
+    }
+  }
+
   static getAncestorId (id, part) {
     if (typeof id !== 'string') {
       throw new Error ('State.getAncestorId expects a string id');

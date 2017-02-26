@@ -327,6 +327,9 @@ etc.), then you might be interested in:
   node.  
   Example: say we have nodes `a.b.c`, `a.b.c$0` and `a.b.c$1`, then calling
   `store.find ('a.b.c').arities` will return `['c$0', 'c$1']`.
+* `State.getArityIndex (id)` &rarr; the index (as a number) for the given
+  arity or `undefined` if the id has no associated arity.  
+  Example: `State.getArityIndex ('a$1.b$2')` &rarr; `2`
 
 ## Working with state ids
 
