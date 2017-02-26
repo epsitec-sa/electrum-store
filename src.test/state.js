@@ -294,7 +294,7 @@ describe ('State', () => {
       expect (arr).to.deep.equal ([1, 2, 10]);
     });
 
-    it ('returns sorted index keys, [n] notationt', () => {
+    it ('returns sorted index keys, [n] notation', () => {
       const store = Store.create ();
       store.select ('a.[1]');
       store.select ('a.[10]');
@@ -310,6 +310,28 @@ describe ('State', () => {
       store.select ('a');
       const state = store.find ('a');
       const arr = state.indexKeys;
+      expect (arr).to.deep.equal ([]);
+    });
+  });
+
+  describe ('arities', () => {
+    it ('returns sorted arity keys', () => {
+      const store = Store.create ();
+      store.select ('a$1');
+      store.select ('a$10');
+      store.select ('a$3');
+      store.select ('a$2.x');
+      store.select ('a.b.c');
+      const state = store.find ('a');
+      const arr = state.arities;
+      expect (arr).to.deep.equal (['a$1', 'a$2', 'a$3', 'a$10']);
+    });
+
+    it ('returns an empty array for an empty state', () => {
+      const store = Store.create ();
+      store.select ('a');
+      const state = store.find ('a');
+      const arr = state.arities;
       expect (arr).to.deep.equal ([]);
     });
   });

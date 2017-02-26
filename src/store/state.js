@@ -103,6 +103,10 @@ export default class State {
     return this.store.getIndexKeys (this.id);
   }
 
+  get arities () {
+    return this.store.getArities (this.id);
+  }
+
   contains (id) {
     return this.get (id) !== undefined;
   }

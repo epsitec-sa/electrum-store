@@ -57,6 +57,21 @@ function getNumber (x) {
   }
 }
 
+function arityComparer (a, b) {
+  // Sort as a$1 a$2 a$10 a$100
+  const lenDiff = a.length - b.length;
+  if (lenDiff) {
+    return lenDiff;
+  }
+  if (a < b) {
+    return -1;
+  }
+  if (b < a) {
+    return 1;
+  }
+  return 0;
+}
+
 const secretKey = {};
 
 /******************************************************************************/
@@ -107,6 +122,15 @@ export default class Store {
     const prefix = startId + '.';
     const length = prefix.length;
     return ids.filter (id => id.startsWith (prefix) && id.indexOf ('.', length) < 0);
+  }
+
+  getArities (startId) {
+    const ids = Object.getOwnPropertyNames (this._states);
+    const prefix = startId + '$';
+    const length = prefix.length;
+    const arities = ids.filter (id => id.startsWith (prefix) && id.indexOf ('.', length) < 0);
+    arities.sort (arityComparer);
+    return arities;
   }
 
   getKeys (startId) {
