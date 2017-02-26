@@ -3,6 +3,8 @@
 import 'babel-polyfill';
 import {isPositiveInt} from 'electrum-utils';
 
+/******************************************************************************/
+
 const emptyValues = {};
 const secretKey = {};
 
@@ -43,7 +45,7 @@ function isEmpty (obj) { /*jshint -W089 */
 
 /******************************************************************************/
 
-class State {
+export default class State {
   constructor (key, id, store, generation, values) {
     if (key !== secretKey) {
       throw new Error ('Do not call State constructor directly; use State.create instead');
@@ -371,5 +373,3 @@ class State {
 }
 
 /******************************************************************************/
-
-module.exports = State;

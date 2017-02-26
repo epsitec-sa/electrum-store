@@ -61,7 +61,7 @@ const secretKey = {};
 
 /******************************************************************************/
 
-class Store {
+export default class Store {
   constructor (id, key, values) {
     if (key !== secretKey) {
       throw new Error ('Do not call Store constructor directly; use Store.create instead');
@@ -326,4 +326,4 @@ class Store {
   }
 }
 
-module.exports = Store;
+/******************************************************************************/
