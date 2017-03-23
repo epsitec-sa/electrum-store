@@ -318,6 +318,9 @@ Without any argument, they return the state itself.
 `select()`, `find()`, `remove()` and `any()` accept a child `id` or an index,
 which will be converted to a key and used to look up the child.
 
+> Note that you can use `find('*')` as a synonym to `find()`, which both
+> return themself.
+
 ## Arity
 
 If you are using the special _arity_ notation defined by Lydia (`a$0`, `a$1`,

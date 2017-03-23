@@ -137,6 +137,13 @@ describe ('State', () => {
       expect (state2).to.equal (state1);
     });
 
+    it ('with "*" selects self', () => {
+      const store = Store.create ();
+      const state1 = store.select ('a');
+      const state2 = state1.select ('*');
+      expect (state2).to.equal (state1);
+    });
+
     it ('throws for invalid ids', () => {
       const store = Store.create ();
       expect (() => store.root.select (-1)).to.throw (Error);
@@ -189,6 +196,13 @@ describe ('State', () => {
       const store = Store.create ();
       const state1 = store.select ('a');
       const state2 = state1.find ();
+      expect (state2).to.equal (state1);
+    });
+
+    it ('with "*" finds self', () => {
+      const store = Store.create ();
+      const state1 = store.select ('a');
+      const state2 = state1.find ('*');
       expect (state2).to.equal (state1);
     });
 

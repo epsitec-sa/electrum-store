@@ -147,28 +147,28 @@ export default class State {
   }
 
   remove (id) {
-    if ((id === undefined) && (arguments.length === 0)) {
+    if (State.isAutoSelector (id, arguments.length)) {
       return this.store.remove (this.id);
     }
     return this.selectOrFind (id, i => this._store.remove (i));
   }
 
   select (id) {
-    if ((id === undefined) && (arguments.length === 0)) {
+    if (State.isAutoSelector (id, arguments.length)) {
       return this;
     }
     return this.selectOrFind (id, i => this._store.select (i));
   }
 
   find (id) {
-    if ((id === undefined) && (arguments.length === 0)) {
+    if (State.isAutoSelector (id, arguments.length)) {
       return this;
     }
     return this.selectOrFind (id, i => this._store.find (i));
   }
 
   any (id) {
-    if ((id === undefined) && (arguments.length === 0)) {
+    if (State.isAutoSelector (id, arguments.length)) {
       return !isEmpty (this._values) || this.keys.length > 0;
     }
     return this.selectOrFind (id, i => {
@@ -361,6 +361,16 @@ export default class State {
       }
       return state;
     }
+  }
+
+  static isAutoSelector (id, length) {
+    if ((id === undefined) && length === 0) {
+      return true;
+    }
+    if (id === '*') {
+      return true;
+    }
+    return false;
   }
 
   static freeze (obj) {
