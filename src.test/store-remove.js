@@ -1,7 +1,7 @@
 /* global describe it */
 
 import {expect} from 'mai-chai';
-import {State, Store} from 'electrum-store';
+import {Store} from 'electrum-store';
 
 describe ('Store', () => {
   describe ('remove()', () => {

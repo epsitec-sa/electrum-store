@@ -34,9 +34,11 @@ function verifyMutationKeys (mutation) {
   }
 }
 
-function isEmpty (obj) { /* jshint -W089 */
-  for (let x in obj) { /* jshint unused:false */
-    return false;
+function isEmpty (obj) {
+  for (let x in obj) {
+    if (obj.hasOwnProperty (x)) {
+      return false;
+    }
   }
   return true;
 }
@@ -58,8 +60,8 @@ export default class State {
       values = emptyValues; // optimize for values set to {}
     } else {
       Object.freeze (values);
-      for (let key of Object.getOwnPropertyNames (values)) {
-        State.freezeTop (values[key]);
+      for (let propName of Object.getOwnPropertyNames (values)) {
+        State.freezeTop (values[propName]);
       }
     }
 

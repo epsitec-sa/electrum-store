@@ -24,13 +24,13 @@ describe ('Store', () => {
     it ('returns root id when no id is specified', () => {
       const arr = store.getIds ();
       expect (arr).to.have.length (1);
-      expect (arr).to.deep.equal (['']);
+      expect (arr).to.deep.equal ([ '' ]);
     });
 
     it ('returns top level ids when starting with root id', () => {
       const arr = store.getIds ('');
       expect (arr).to.have.length (1);
-      expect (arr).to.deep.equal (['a']);
+      expect (arr).to.deep.equal ([ 'a' ]);
     });
   });
 

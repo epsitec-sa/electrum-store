@@ -227,9 +227,9 @@ export default class Store {
       if (obj.some (x => x.offset === undefined)) {
         throw new Error ('applyChanges expects an array of {offset: ...}');
       }
-      obj.forEach (obj => {
-        const childId = State.join (id, obj.offset);
-        if (obj.value === undefined) {
+      obj.forEach (item => {
+        const childId = State.join (id, item.offset);
+        if (item.value === undefined) {
           // The item does not specify a value: this means that the caller
           // wants to remove the subtree defined by the child node.
           this.remove (childId);
@@ -237,16 +237,16 @@ export default class Store {
           // The item contains a value (either an object or a simple value)
           // and we will recursively apply it on the subtree starting at the
           // child node.
-          const value = typeof obj.value === 'object' ?
+          const value = typeof item.value === 'object' ?
                         undefined :
-                        obj.value;
+                        item.value;
 
           // Create offset/id/value props on child node:
           this
             .select (childId)
-            .set ('offset', obj.offset, 'id', obj.id, 'value', value, 'pojo', obj.value);
+            .set ('offset', item.offset, 'id', item.id, 'value', value, 'pojo', item.value);
 
-          this.applyChanges (childId, obj.value, defaultKey);
+          this.applyChanges (childId, item.value, defaultKey);
         }
       });
 

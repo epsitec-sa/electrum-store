@@ -23,7 +23,7 @@ describe ('State', () => {
     });
 
     it ('creates an empty state with initial values', () => {
-      const state = State.create ('a', {'': 123, foo: 'bar'});
+      const state = State.create ('a', {'': 123, 'foo': 'bar'});
       expect (state).to.exist ();
       expect (state).to.have.property ('id', 'a');
       expect (state).to.have.property ('value', 123);
@@ -197,7 +197,7 @@ describe ('State', () => {
     });
 
     it ('freezes deeply an object', () => {
-      const obj = {x: 1, y: {a: ['A', [{q: 'Q'}]]}};
+      const obj = {x: 1, y: {a: ['A', [ {q: 'Q'} ]]}};
       State.freeze (obj);
       expect (Object.isFrozen (obj)).to.be.true ();
       expect (Object.isFrozen (obj.x)).to.be.true ();
@@ -223,7 +223,7 @@ describe ('State', () => {
     });
 
     it ('freezes top level only, but walks arrays', () => {
-      const obj = [{x: 1, y: {a: 'A'}}];
+      const obj = [ {x: 1, y: {a: 'A'}} ];
       State.freezeTop (obj);
       expect (Object.isFrozen (obj)).to.be.true ();
       expect (Object.isFrozen (obj[0])).to.be.true ();

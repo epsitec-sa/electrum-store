@@ -98,16 +98,16 @@ describe ('State', () => {
     });
 
     it ('freezes deeply arrays up to the top level objects', () => {
-      const state = State.create ('a').set ('x', [{a: 1}, [{b: {x: 2}}]]);
+      const state = State.create ('a').set ('x', [{a: 1}, [ {b: {x: 2}} ]]);
       const ref = state.get ('x');
       expect (Object.isFrozen (ref[0])).to.be.true ();
       expect (Object.isFrozen (ref[1])).to.be.true ();
       expect (Object.isFrozen (ref[1][0])).to.be.true ();
       expect (Object.isFrozen (ref[1][0].b)).to.be.false ();
-      expect (ref).to.deep.equal ([{a: 1}, [{b: {x: 2}}]]);
+      expect (ref).to.deep.equal ([{a: 1}, [ {b: {x: 2}} ]]);
       expect (() => ref[0].a = 0).to.throw ();
       expect (() => ref[1][0].b.x = 0).to.not.throw ();
-      expect (ref).to.deep.equal ([{a: 1}, [{b: {x: 0}}]]);
+      expect (ref).to.deep.equal ([{a: 1}, [ {b: {x: 0}} ]]);
     });
   });
 
@@ -383,7 +383,7 @@ describe ('State', () => {
       const state = store.find ('a');
       const fresh = state.add ();
       expect (fresh.id).to.equal ('a.0');
-      expect (state.indexKeys).to.deep.equal ([0]);
+      expect (state.indexKeys).to.deep.equal ([ 0 ]);
     });
   });
 

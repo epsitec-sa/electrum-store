@@ -77,7 +77,7 @@ describe ('Store', () => {
 
     it ('throws when offset is missing', () => {
       const store = Store.create ();
-      const array = [{id: 'x', value: 'X'}];
+      const array = [ {id: 'x', value: 'X'} ];
 
       expect (() => store.applyChanges ('root', array, 'value')).to.throw ('expects an array');
     });
@@ -161,11 +161,11 @@ describe ('Store', () => {
       expect (store.find ('root.10').get ('value')).to.not.exist ();
       expect (store.find ('root.13').get ('value')).to.equal ('hello');
 
-      store.applyChanges ('root', [{offset: 12, id: 'y', value: {year: 1986}}]);
+      store.applyChanges ('root', [ {offset: 12, id: 'y', value: {year: 1986}} ]);
       expect (store.find ('root.12.year').get ()).to.equal (1986);
       expect (store.find ('root.12.name').get ()).to.equal ('bar');
 
-      store.applyChanges ('root', [{offset: 12}]);
+      store.applyChanges ('root', [ {offset: 12} ]);
       expect (store.find ('root.12')).to.not.exist ();
     });
 
