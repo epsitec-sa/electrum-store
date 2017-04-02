@@ -1,4 +1,4 @@
-'use strict';
+import State from './state.js';
+import Store from './store.js';
 
-export State from './store/state.js';
-export Store from './store/store.js';
+export { State, Store };

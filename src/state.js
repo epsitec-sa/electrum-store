@@ -1,5 +1,3 @@
-'use strict';
-
 import 'babel-polyfill';
 import {isPositiveInt} from 'electrum-utils';
 
@@ -36,7 +34,7 @@ function verifyMutationKeys (mutation) {
   }
 }
 
-function isEmpty (obj) { /*jshint -W089 */
+function isEmpty (obj) { /* jshint -W089 */
   for (let x in obj) { /* jshint unused:false */
     return false;
   }

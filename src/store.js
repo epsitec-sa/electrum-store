@@ -1,5 +1,3 @@
-'use strict';
-
 import State from './state.js';
 import {parsePositiveInt} from 'electrum-utils';
 
@@ -112,7 +110,7 @@ export default class Store {
 
   getIds (startId) {
     if (arguments.length === 0) {
-      return [''];
+      return [ '' ];
     }
     const ids = Object.getOwnPropertyNames (this._states);
     if (startId === '') {
@@ -240,8 +238,8 @@ export default class Store {
           // and we will recursively apply it on the subtree starting at the
           // child node.
           const value = typeof obj.value === 'object' ?
-                        undefined
-                        : obj.value;
+                        undefined :
+                        obj.value;
 
           // Create offset/id/value props on child node:
           this
