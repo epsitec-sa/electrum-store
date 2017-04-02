@@ -1,6 +1,6 @@
 {
   "name": "electrum-store",
-  "version": "3.9.0",
+  "version": "3.9.1",
   "description": "Electrum store provides a store implementation tailored for Electrum.",
   "main": "lib/index.js",
   "scripts": {
@@ -20,7 +20,7 @@
   "license": "MIT",
   "homepage": "https://github.com/epsitec-sa/electrum-store",
   "dependencies": {
-    "electrum-utils": "^1.6.2"
+    "electrum-utils": "^1.6.4"
   },
   "devDependencies": {
     "babel-env": "^2.3.1",
