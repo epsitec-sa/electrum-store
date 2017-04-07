@@ -115,19 +115,32 @@ describe ('State', () => {
     it ('selects child state', () => {
       const store = Store.create ();
       const state3 = store.select ('a.b.c');
-      const state1 = store.select ('a');
       const state2 = store.select ('a.b');
+      const state1 = store.select ('a');
       const root = store.root;
       expect (root).to.have.property ('id', '');
       expect (root.select ()).to.equal (root);
       expect (root.select ('a')).to.equal (state1);
       expect (root.select ('a.b')).to.equal (state2);
       expect (root.select ('a.b.c')).to.equal (state3);
+
+      // Mutate state 'a' by adding a new node to it; state1 will no longer
+      // be up-to-date with respect to the store:
+      expect (root.select ('a')).to.equal (state1);
+      expect (state1.find ('x')).to.not.exist ();
       expect (root.select ('a.x')).to.exist ();
+      expect (root.select ('a')).to.not.equal (state1);
+      // However, since looking up children uses the store, find('x') will
+      // new retrieve the node from the store and succeed:
+      const state1x = store.find ('a');
+      expect (state1.find ('x')).to.exist ();
+      expect (state1.find ('')).to.equal (state1x);
+      expect (state1.find ()).to.equal (state1x);
+
+      // The 'a.b' subtree has not changed and stil maps to the very same
+      // nodes as before:
       expect (state1.select ('b')).to.equal (state2);
       expect (state1.select ('b.c')).to.equal (state3);
-      expect (state1.select ()).to.equal (state1);
-      expect (state1.select ('')).to.equal (state1);
     });
 
     it ('without arguments selects self', () => {

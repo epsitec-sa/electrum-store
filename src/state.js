@@ -155,14 +155,14 @@ export default class State {
 
   select (id) {
     if (State.isAutoSelector (id, arguments.length)) {
-      return this;
+      return this._store.find (this._id);
     }
     return this.selectOrFind (id, i => this._store.select (i));
   }
 
   find (id) {
     if (State.isAutoSelector (id, arguments.length)) {
-      return this;
+      return this._store.find (this._id);
     }
     return this.selectOrFind (id, i => this._store.find (i));
   }
@@ -186,7 +186,7 @@ export default class State {
 
   selectOrFind (id, access) {
     if (id === '') {
-      return this;
+      return access (this._id);
     }
     if (isPositiveInteger (id)) {
       id = '' + id;

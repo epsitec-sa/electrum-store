@@ -85,6 +85,9 @@ expect (store.find ('a.b.c')).to.not.exist ();
 expect (store.find ('a.b.d')).to.not.exist ();
 ```
 
+In order to get the current _state_ of a state, call `state.find()`
+without any argument.
+
 ## Explicitly set state
 
 State is usually updated using `with()`, `withValue()` and `withValues()`

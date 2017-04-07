@@ -168,7 +168,7 @@ export default class Store {
       return state;
     } else {
       const mutation = {
-        store: this,
+        store:      this,
         generation: changeGeneration (this)
       };
       return updateTree (this, state, mutation);

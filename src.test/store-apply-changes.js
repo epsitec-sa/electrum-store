@@ -109,8 +109,8 @@ describe ('Store', () => {
       const store = Store.create ();
       const info = {
         $apply: 'props',
-        name: 'foo',
-        array: [
+        name:   'foo',
+        array:  [
           {offset: 10, id: 'x', value: {year: 2016, name: 'foo'}},
           {offset: 12, id: 'y', value: {$apply: 'props', year: 1984, name: 'bar'}}
         ]
@@ -189,9 +189,9 @@ describe ('Store', () => {
       const store = Store.create ();
       const changes = {
         $apply: 'props',
-        name: 'John',
-        age: 42,
-        array: [
+        name:   'John',
+        age:    42,
+        array:  [
           {offset: 1, id: 'x', value: {x: 10}},
           {offset: 2, id: 'y', value: {y: 20}}
         ]
